@@ -1,0 +1,78 @@
+:root {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --text: #1c1b19;
+  --muted: #6b6a66;
+  --border: #e6e2d9;
+  --accent: #b08d57;
+  --accent-dark: #8a6d3b;
+  --deep: #1f2a37;
+  --ok: #2f7d4f;
+  --danger: #b3261e;
+  --radius: 6px;
+  --font-title: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-title);
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.8rem 1.6rem;
+  border: 1px solid var(--deep);
+  border-radius: var(--radius);
+  background: var(--deep);
+  color: #fff;
+  font: 500 0.95rem var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn--accent {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

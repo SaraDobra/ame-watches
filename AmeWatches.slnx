@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AmeWatches.Api/AmeWatches.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AmeWatches.Tests/AmeWatches.Tests.csproj" />
+  </Folder>
+</Solution>
