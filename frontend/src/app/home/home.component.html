@@ -1,0 +1,78 @@
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <span class="eyebrow">Casio &nbsp;·&nbsp; Q&amp;Q</span>
+      <h1>Ora origjinale, të përzgjedhura për çdo stil.</h1>
+      <p>Modele autentike me garanci 1 vit nga amé watches dhe dërgesë falas në gjithë vendin.</p>
+      <div class="actions">
+        <a routerLink="/" fragment="koleksioni" class="btn btn--gold">Shiko koleksionin</a>
+        <a routerLink="/" fragment="brendet" class="btn btn--ghost">Zbulo brendet</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="glow"></div>
+      <app-watch-art tone="black" label="Orë amé watches" />
+    </div>
+  </div>
+</section>
+
+<section id="koleksioni" class="section">
+  <div class="container">
+    <header class="section-head">
+      <span class="eyebrow eyebrow--dark">Koleksioni</span>
+      <h2>Të zgjedhurat</h2>
+      <p>Katër modele nga koleksioni ynë, të renditura sipas çmimit.</p>
+    </header>
+
+    @if (!loaded()) {
+      <div class="grid">
+        @for (n of [1, 2, 3, 4]; track n) {
+          <div class="skeleton"></div>
+        }
+      </div>
+    } @else if (failed()) {
+      <p class="note">Koleksioni nuk po ngarkohet për momentin. Provoni përsëri pas pak.</p>
+    } @else {
+      <div class="grid">
+        @for (product of featured(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<section id="brendet" class="brands">
+  <div class="container brands-grid">
+    <article class="brand brand--casio">
+      <span class="eyebrow">Brendi</span>
+      <h2>Casio</h2>
+      <p>Markë japoneze e njohur për saktësi dhe qëndrueshmëri, nga modelet klasike dixhitale te serite sportive.</p>
+      <span class="count">{{ brandCount('casio') }} modele</span>
+    </article>
+    <article class="brand brand--qq">
+      <span class="eyebrow">Brendi</span>
+      <h2>Q&amp;Q</h2>
+      <p>Ora elegante dhe të lehta për çdo ditë, me dizajn të pastër dhe çmim të arritshëm.</p>
+      <span class="count">{{ brandCount('q-and-q') }} modele</span>
+    </article>
+  </div>
+</section>
+
+<section id="pse-ame" class="section section--ivory">
+  <div class="container">
+    <header class="section-head">
+      <span class="eyebrow eyebrow--dark">Pse amé watches</span>
+      <h2>Blini me qetësi</h2>
+    </header>
+    <div class="benefits">
+      @for (b of benefits; track b.title) {
+        <div class="benefit">
+          <span class="num"></span>
+          <h3>{{ b.title }}</h3>
+          <p>{{ b.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>

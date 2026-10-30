@@ -1,21 +1,23 @@
 :root {
-  --bg: #faf8f4;
-  --surface: #ffffff;
-  --text: #1c1b19;
-  --muted: #6b6a66;
-  --border: #e6e2d9;
-  --accent: #b08d57;
-  --accent-dark: #8a6d3b;
-  --deep: #1f2a37;
-  --ok: #2f7d4f;
-  --danger: #b3261e;
-  --radius: 6px;
-  --font-title: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --ink: #0c0c0d;
+  --ivory: #f7f4ee;
+  --paper: #ffffff;
+  --muted: #6f6a60;
+  --line: #e4ded1;
+  --gold: #b8975a;
+  --gold-light: #d9c08a;
+  --gold-dark: #8a6d3b;
+  --danger: #a3261e;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-body: 'Jost', 'Helvetica Neue', Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,
@@ -26,15 +28,19 @@ body {
 
 body {
   font-family: var(--font-body);
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.55;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--ivory);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: lining-nums;
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--font-title);
+  font-family: var(--font-display);
+  font-variant-numeric: lining-nums;
   font-weight: 500;
   margin: 0 0 0.5rem;
 }
@@ -48,28 +54,43 @@ img {
   display: block;
 }
 
+[id] {
+  scroll-margin-top: 110px;
+}
+
 .container {
   width: 100%;
-  max-width: 1120px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
 .btn {
   display: inline-block;
-  padding: 0.8rem 1.6rem;
-  border: 1px solid var(--deep);
-  border-radius: var(--radius);
-  background: var(--deep);
-  color: #fff;
-  font: 500 0.95rem var(--font-body);
+  padding: 1rem 2.2rem;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--ivory);
+  font: 500 0.74rem var(--font-body);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
 }
 
-.btn--accent {
-  background: var(--accent);
-  border-color: var(--accent);
+.btn--gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn--gold:hover {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+.btn--ghost:hover {
+  background: rgba(184, 151, 90, 0.15);
 }
 
 .btn:disabled {
