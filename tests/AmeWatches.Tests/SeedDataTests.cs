@@ -106,4 +106,42 @@ public class SeedDataTests
         var item = await db.Context.OrderItems.SingleAsync();
         Assert.Equal(paid, item.UnitPrice);
     }
+
+    [Fact]
+    public async Task Seed_PricesMatchTheBusinessList()
+    {
+        using var db = new TestDb();
+        await SeedData.ApplyAsync(db.Context);
+
+        var products = await db.Context.Products.Include(p => p.Brand).ToListAsync();
+        Assert.All(products.Where(p => p.Brand.Slug == "q-and-q"), p => Assert.Equal(55m, p.Price));
+        Assert.All(products.Where(p => p.Brand.Slug == "casio"), p => Assert.Equal(70m, p.Price));
+    }
+
+    [Fact]
+    public async Task Seed_EveryProductHasAtLeastOnePhoto_AndTheFileExists()
+    {
+        using var db = new TestDb();
+        await SeedData.ApplyAsync(db.Context);
+
+        var publicDir = FindPublicDirectory();
+        var products = await db.Context.Products.Include(p => p.Images).ToListAsync();
+
+        Assert.All(products, p =>
+        {
+            Assert.NotEmpty(p.Images);
+            Assert.All(p.Images, image => Assert.True(File.Exists(Path.Combine(publicDir, image.Url.TrimStart('/'))), image.Url));
+        });
+    }
+
+    private static string FindPublicDirectory()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !Directory.Exists(Path.Combine(dir.FullName, "frontend", "public")))
+            dir = dir.Parent;
+
+        return dir is null
+            ? throw new DirectoryNotFoundException("frontend/public nuk u gjet.")
+            : Path.Combine(dir.FullName, "frontend", "public");
+    }
 }

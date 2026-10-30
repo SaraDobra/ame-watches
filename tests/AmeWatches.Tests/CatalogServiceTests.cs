@@ -11,7 +11,7 @@ public class CatalogServiceTests
     private static async Task<(TestDb db, CatalogService service)> Setup()
     {
         var db = new TestDb();
-        await SeedData.ApplyAsync(db.Context);
+        await CatalogFixture.ApplyAsync(db.Context);
         return (db, new CatalogService(db.Context));
     }
 

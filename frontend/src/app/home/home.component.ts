@@ -31,14 +31,15 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     if (!this.isBrowser) return;
 
-    this.catalog.getProducts({ pageSize: 4, sort: 'PriceDesc' }).subscribe({
+    this.catalog.getProducts({ pageSize: 4, sort: 'Newest' }).subscribe({
       next: result => { this.featured.set(result.items); this.loaded.set(true); },
       error: () => { this.failed.set(true); this.loaded.set(true); }
     });
     this.catalog.getBrands().subscribe({ next: brands => this.brands.set(brands) });
   }
 
-  brandCount(slug: string): number {
-    return this.brands().find(b => b.slug === slug)?.productCount ?? 0;
+  brandCount(slug: string): string {
+    const count = this.brands().find(b => b.slug === slug)?.productCount ?? 0;
+    return count === 1 ? '1 model' : `${count} modele`;
   }
 }

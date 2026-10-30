@@ -10,7 +10,7 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
   imports: [DecimalPipe, WatchArtComponent],
   template: `
     <article class="card">
-      <div class="media">
+      <div class="media" [class.media--photo]="!!product().imageUrl">
         @if (product().imageUrl) {
           <img [src]="product().imageUrl" [alt]="product().brand + ' ' + product().name" loading="lazy">
         } @else {
@@ -32,7 +32,8 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
     .card { background: var(--paper); border: 1px solid var(--line); transition: box-shadow 0.35s, transform 0.35s; height: 100%; display: flex; flex-direction: column; }
     .card:hover { box-shadow: 0 22px 44px -22px rgba(12, 12, 13, 0.35); transform: translateY(-4px); }
     .media { position: relative; background: radial-gradient(circle at 50% 40%, #fbf9f4, #efe9dc); padding: 1.6rem 3.2rem 1rem; }
-    .media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+    .media--photo { background: #fff; padding: 1rem; }
+    .media img { width: 100%; aspect-ratio: 4 / 5; object-fit: contain; }
     .tag { position: absolute; top: 0.9rem; left: 0.9rem; background: var(--ink); color: #fff; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.3rem 0.6rem; }
     .info { padding: 1.2rem 1.4rem 1.6rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
     .brand { font-size: 0.66rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-dark); }

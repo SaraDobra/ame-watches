@@ -26,9 +26,7 @@ import { LogoComponent } from './logo.component';
         </div>
         <div>
           <h4>Kontakti</h4>
-          <a href="#" rel="noopener">Instagram</a>
-          <a href="#" rel="noopener">WhatsApp</a>
-          <a href="#" rel="noopener">Email</a>
+          <a href="https://www.instagram.com/ame.watches.ks/" target="_blank" rel="noopener noreferrer">Instagram &#64;ame.watches.ks</a>
         </div>
       </div>
       <div class="container legal">
