@@ -5,7 +5,7 @@
       <h1>Ora origjinale, të përzgjedhura për çdo stil.</h1>
       <p>Modele autentike me garanci 1 vit nga amé watches dhe dërgesë falas në gjithë vendin.</p>
       <div class="actions">
-        <a routerLink="/" fragment="koleksioni" class="btn btn--gold">Shiko koleksionin</a>
+        <a routerLink="/ora" class="btn btn--gold">Shiko koleksionin</a>
         <a routerLink="/" fragment="brendet" class="btn btn--ghost">Zbulo brendet</a>
       </div>
     </div>
@@ -38,6 +38,9 @@
           <app-product-card [product]="product" />
         }
       </div>
+      <div class="more">
+        <a routerLink="/ora" class="btn btn--dark">Shiko të gjitha orët</a>
+      </div>
     }
   </div>
 </section>
@@ -48,13 +51,13 @@
       <span class="eyebrow">Brendi</span>
       <h2>Casio</h2>
       <p>Markë japoneze e njohur për saktësi dhe qëndrueshmëri, me modele për gra dhe për burra.</p>
-      <span class="count">{{ brandCount('casio') }}</span>
+      <a routerLink="/ora" [queryParams]="{ brand: 'casio' }" class="link">{{ brandCount('casio') }} · Shiko modelet →</a>
     </article>
     <article class="brand brand--qq">
       <span class="eyebrow">Brendi</span>
       <h2>Q&amp;Q</h2>
       <p>Ora elegante dhe të lehta për çdo ditë, me dizajn të pastër dhe çmim të arritshëm.</p>
-      <span class="count">{{ brandCount('q-and-q') }}</span>
+      <a routerLink="/ora" [queryParams]="{ brand: 'q-and-q' }" class="link">{{ brandCount('q-and-q') }} · Shiko modelet →</a>
     </article>
   </div>
 </section>

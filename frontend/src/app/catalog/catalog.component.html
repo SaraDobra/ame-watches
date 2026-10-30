@@ -1,0 +1,107 @@
+<section class="head">
+  <div class="container">
+    <nav class="crumbs" aria-label="Rruga">
+      <a routerLink="/">Ballina</a><span>/</span><span>Koleksioni</span>
+    </nav>
+    <h1>Koleksioni</h1>
+    <p>Ora origjinale Casio dhe Q&amp;Q për gra dhe për burra.</p>
+  </div>
+</section>
+
+<section class="container layout">
+  <button type="button" class="toggle" (click)="filtersOpen.set(!filtersOpen())" [attr.aria-expanded]="filtersOpen()">
+    {{ filtersOpen() ? 'Mbyll filtrat' : 'Filtrat' }}
+  </button>
+
+  <aside class="filters" [class.filters--open]="filtersOpen()">
+    <div class="group">
+      <label class="label" for="search">Kërko</label>
+      <input id="search" type="search" placeholder="Emri ose kodi i modelit" [value]="filter().search ?? ''"
+             (change)="setSearch($event)">
+    </div>
+
+    <div class="group">
+      <span class="label">Për</span>
+      <div class="pills">
+        @for (g of genders; track g.value) {
+          <button type="button" class="pill" [class.pill--on]="(filter().gender ?? '') === g.value"
+                  (click)="setFilter({ gender: g.value })">{{ g.label }}</button>
+        }
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="label">Brendi</span>
+      <div class="pills">
+        <button type="button" class="pill" [class.pill--on]="!filter().brand" (click)="setFilter({ brand: '' })">Të gjitha</button>
+        @for (b of brands(); track b.id) {
+          <button type="button" class="pill" [class.pill--on]="filter().brand === b.slug"
+                  (click)="setFilter({ brand: b.slug })">{{ b.name }} <small>{{ b.productCount }}</small></button>
+        }
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="label">Çmimi (€)</span>
+      <div class="range">
+        <input type="number" min="0" placeholder="Nga" aria-label="Çmimi minimal" [value]="filter().minPrice ?? ''" (change)="setPrice('minPrice', $event)">
+        <span>–</span>
+        <input type="number" min="0" placeholder="Deri" aria-label="Çmimi maksimal" [value]="filter().maxPrice ?? ''" (change)="setPrice('maxPrice', $event)">
+      </div>
+    </div>
+
+    @if (hasFilters()) {
+      <button type="button" class="clear" (click)="clearFilters()">Pastro filtrat</button>
+    }
+  </aside>
+
+  <div class="results">
+    <div class="bar">
+      <span class="count">{{ result() ? countLabel() : '' }}</span>
+      <label class="sort">
+        <span>Rendit</span>
+        <select (change)="setFilter({ sort: $any($event.target).value })" [value]="filter().sort">
+          @for (s of sorts; track s.value) {
+            <option [value]="s.value" [selected]="filter().sort === s.value">{{ s.label }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    @if (loading()) {
+      <div class="grid">
+        @for (n of [1, 2, 3]; track n) {
+          <div class="skeleton"></div>
+        }
+      </div>
+    } @else if (failed()) {
+      <div class="empty">
+        <h2>Koleksioni nuk po ngarkohet</h2>
+        <p>Provoni përsëri pas pak.</p>
+      </div>
+    } @else if (result() && result()!.items.length === 0) {
+      <div class="empty">
+        <h2>Nuk u gjet asnjë orë</h2>
+        <p>Provoni të ndryshoni ose të hiqni disa filtra.</p>
+        <button type="button" class="btn btn--dark" (click)="clearFilters()">Pastro filtrat</button>
+      </div>
+    } @else if (result()) {
+      <div class="grid">
+        @for (product of result()!.items; track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+
+      @if (result()!.totalPages > 1) {
+        <nav class="pager" aria-label="Faqet">
+          <button type="button" [disabled]="result()!.page <= 1" (click)="goToPage(result()!.page - 1)">‹</button>
+          @for (p of pages(); track p) {
+            <button type="button" [class.on]="p === result()!.page" [attr.aria-current]="p === result()!.page ? 'page' : null"
+                    (click)="goToPage(p)">{{ p }}</button>
+          }
+          <button type="button" [disabled]="result()!.page >= result()!.totalPages" (click)="goToPage(result()!.page + 1)">›</button>
+        </nav>
+      }
+    }
+  </div>
+</section>

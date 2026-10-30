@@ -1,0 +1,72 @@
+@if (loading()) {
+  <section class="container loading">
+    <div class="sk-media"></div>
+    <div class="sk-info"></div>
+  </section>
+} @else if (notFound() || !product()) {
+  <section class="container missing">
+    <h1>Ora nuk u gjet</h1>
+    <p>Kjo orë nuk ekziston ose nuk është më e disponueshme.</p>
+    <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
+  </section>
+} @else {
+  <section class="container detail">
+    <nav class="crumbs" aria-label="Rruga">
+      <a routerLink="/">Ballina</a><span>/</span>
+      <a routerLink="/ora">Koleksioni</a><span>/</span>
+      <a routerLink="/ora" [queryParams]="{ brand: product()!.brandSlug }">{{ product()!.brand }}</a><span>/</span>
+      <span>{{ product()!.name }}</span>
+    </nav>
+
+    <div class="layout">
+      <div class="gallery">
+        <div class="stage">
+          @if (product()!.images.length) {
+            <img [src]="product()!.images[selected()]" [alt]="product()!.brand + ' ' + product()!.name + ' — foto ' + (selected() + 1)">
+          } @else {
+            <app-watch-art tone="black" [label]="product()!.brand + ' ' + product()!.name" />
+          }
+        </div>
+        @if (product()!.images.length > 1) {
+          <div class="thumbs" role="tablist" aria-label="Fotot e orës">
+            @for (image of product()!.images; track image; let i = $index) {
+              <button type="button" role="tab" [class.on]="i === selected()" [attr.aria-selected]="i === selected()"
+                      [attr.aria-label]="'Foto ' + (i + 1)" (click)="selected.set(i)">
+                <img [src]="image" alt="" loading="lazy">
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="info">
+        <span class="brand">{{ product()!.brand }}</span>
+        <h1>{{ product()!.name }}</h1>
+        <span class="code">{{ product()!.modelCode }}</span>
+
+        <div class="price">{{ product()!.price | number: '1.0-2' }} €</div>
+        <div class="stock" [class.stock--out]="!product()!.inStock">{{ stockText() }}</div>
+
+        @if (product()!.description) {
+          <p class="desc">{{ product()!.description }}</p>
+        }
+
+        <button type="button" class="btn btn--gold buy" disabled>Shto në shportë</button>
+        <p class="soon">Porositja online hapet së shpejti. Për porosi na shkruani në Instagram.</p>
+
+        <ul class="trust">
+          @for (item of trust; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+
+        <h2>Specifikimet</h2>
+        <dl class="specs">
+          @for (spec of specs(); track spec.label) {
+            <div><dt>{{ spec.label }}</dt><dd>{{ spec.value }}</dd></div>
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+}

@@ -1,5 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ProductListItem } from '../models/catalog.models';
 import { WatchArtComponent } from './watch-art.component';
 
@@ -7,9 +8,9 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
 
 @Component({
   selector: 'app-product-card',
-  imports: [DecimalPipe, WatchArtComponent],
+  imports: [DecimalPipe, RouterLink, WatchArtComponent],
   template: `
-    <article class="card">
+    <a class="card" [routerLink]="['/ora', product().slug]" [attr.aria-label]="product().brand + ' ' + product().name">
       <div class="media" [class.media--photo]="!!product().imageUrl">
         @if (product().imageUrl) {
           <img [src]="product().imageUrl" [alt]="product().brand + ' ' + product().name" loading="lazy">
@@ -26,10 +27,10 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
         <span class="code">{{ product().modelCode }}</span>
         <span class="price">{{ product().price | number: '1.0-2' }} €</span>
       </div>
-    </article>
+    </a>
   `,
   styles: `
-    .card { background: var(--paper); border: 1px solid var(--line); transition: box-shadow 0.35s, transform 0.35s; height: 100%; display: flex; flex-direction: column; }
+    .card { display: block; text-decoration: none; color: inherit; background: var(--paper); border: 1px solid var(--line); transition: box-shadow 0.35s, transform 0.35s; height: 100%; display: flex; flex-direction: column; }
     .card:hover { box-shadow: 0 22px 44px -22px rgba(12, 12, 13, 0.35); transform: translateY(-4px); }
     .media { position: relative; background: radial-gradient(circle at 50% 40%, #fbf9f4, #efe9dc); padding: 1.6rem 3.2rem 1rem; }
     .media--photo { background: #fff; padding: 1rem; }

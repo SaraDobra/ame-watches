@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Brand, PagedResult, ProductFilter, ProductListItem } from '../models/catalog.models';
+import { Brand, PagedResult, ProductDetail, ProductFilter, ProductListItem } from '../models/catalog.models';
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
@@ -21,5 +21,9 @@ export class CatalogService {
       }
     }
     return this.http.get<PagedResult<ProductListItem>>(`${this.url}/products`, { params });
+  }
+
+  getProduct(slug: string): Observable<ProductDetail> {
+    return this.http.get<ProductDetail>(`${this.url}/products/${encodeURIComponent(slug)}`);
   }
 }

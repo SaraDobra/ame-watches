@@ -14,9 +14,9 @@ import { LogoComponent } from './logo.component';
         </div>
         <div>
           <h4>Koleksioni</h4>
-          <a routerLink="/" fragment="koleksioni">Të zgjedhurat</a>
-          <a routerLink="/" fragment="brendet">Casio</a>
-          <a routerLink="/" fragment="brendet">Q&amp;Q</a>
+          <a routerLink="/ora">Të gjitha orët</a>
+          <a routerLink="/ora" [queryParams]="{ brand: 'casio' }">Casio</a>
+          <a routerLink="/ora" [queryParams]="{ brand: 'q-and-q' }">Q&amp;Q</a>
         </div>
         <div>
           <h4>Informacion</h4>

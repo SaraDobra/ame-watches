@@ -4,13 +4,15 @@ import express from 'express';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
+import { SSR_RESPONSE } from './app/util/ssr-response';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 const indexHtml = join(serverDistFolder, 'index.server.html');
 
 const app = express();
-const commonEngine = new CommonEngine();
+const allowedHosts = (process.env['ALLOWED_HOSTS'] ?? 'localhost').split(',').map((host) => host.trim()).filter(Boolean);
+const commonEngine = new CommonEngine({ allowedHosts });
 
 /**
  * Example Express Rest API endpoints can be defined here.
@@ -47,7 +49,10 @@ app.get('**', (req, res, next) => {
       documentFilePath: indexHtml,
       url: `${protocol}://${headers.host}${originalUrl}`,
       publicPath: browserDistFolder,
-      providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: baseUrl },
+        { provide: SSR_RESPONSE, useValue: res },
+      ],
     })
     .then((html) => res.send(html))
     .catch((err) => next(err));

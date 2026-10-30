@@ -10,7 +10,7 @@ import { LogoComponent } from './logo.component';
     <header>
       <div class="container bar">
         <nav class="left">
-          <a routerLink="/" fragment="koleksioni">Koleksioni</a>
+          <a routerLink="/ora">Koleksioni</a>
           <a routerLink="/" fragment="brendet">Brendet</a>
         </nav>
         <a routerLink="/" class="brand" aria-label="amé watches, ballina">

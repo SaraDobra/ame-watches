@@ -27,7 +27,11 @@ h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 400; line-height: 1.08;
 .brand--qq { background: linear-gradient(135deg, #2b2418, #14110b); border-left: 1px solid rgba(184, 151, 90, 0.35); }
 .brand h2 { font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 400; margin: 0 0 1rem; }
 .brand p { color: #c4bdad; line-height: 1.8; max-width: 38ch; margin: 0 0 1.8rem; }
-.count { font-size: 0.72rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); }
+.more { text-align: center; margin-top: 3rem; }
+.btn--dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn--dark:hover { background: #2a2a2e; }
+.link { font-size: 0.72rem; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 0.3rem; align-self: flex-start; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); }
+.link:hover { color: #fff; }
 
 .benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; }
 .benefit { text-align: center; padding: 0 0.6rem; }

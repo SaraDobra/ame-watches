@@ -38,3 +38,22 @@ export interface ProductFilter {
   page?: number;
   pageSize?: number;
 }
+
+export interface ProductDetail {
+  id: number;
+  name: string;
+  slug: string;
+  modelCode: string;
+  brand: string;
+  brandSlug: string;
+  description: string | null;
+  price: number;
+  stock: number;
+  inStock: boolean;
+  gender: string;
+  type: string;
+  caseSizeMm: number | null;
+  waterResistanceM: number | null;
+  movement: string | null;
+  images: string[];
+}
