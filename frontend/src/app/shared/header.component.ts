@@ -34,11 +34,13 @@ import { LogoComponent } from './logo.component';
     nav a:hover::after { transform: scaleX(1); }
     .brand { text-decoration: none; }
     @media (max-width: 820px) {
-      .bar { grid-template-columns: 1fr; justify-items: center; gap: 0.9rem; }
+      .bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem 1.4rem; }
+      .brand { order: 1; width: 100%; display: flex; justify-content: center; }
+      .left { order: 2; }
+      .right { order: 3; }
       nav { gap: 1.4rem; }
-      .left { order: 2; } .right { order: 3; justify-content: center; } .brand { order: 1; }
-      .bar { grid-template-rows: auto; }
-      nav.left, nav.right { display: none; }
+      .right { justify-content: center; }
+      nav a { font-size: 0.66rem; letter-spacing: 0.16em; }
     }
   `
 })
