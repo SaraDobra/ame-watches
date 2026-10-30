@@ -144,4 +144,27 @@ public class SeedDataTests
             ? throw new DirectoryNotFoundException("frontend/public nuk u gjet.")
             : Path.Combine(dir.FullName, "frontend", "public");
     }
+
+    [Fact]
+    public async Task Seed_HasBothMenAndWomenWatches()
+    {
+        using var db = new TestDb();
+        await SeedData.ApplyAsync(db.Context);
+
+        Assert.True(await db.Context.Products.AnyAsync(p => p.Gender == WatchGender.Men));
+        Assert.True(await db.Context.Products.AnyAsync(p => p.Gender == WatchGender.Women));
+    }
+
+    [Fact]
+    public async Task Seed_AutomaticWatchIsMarkedAsMenAndAutomatic()
+    {
+        using var db = new TestDb();
+        await SeedData.ApplyAsync(db.Context);
+
+        var watch = await db.Context.Products.SingleAsync(p => p.ModelCode == "CMK-100TC-1A");
+
+        Assert.Equal(WatchGender.Men, watch.Gender);
+        Assert.Equal("Automatik", watch.Movement);
+        Assert.Equal(3, await db.Context.ProductImages.CountAsync(i => i.ProductId == watch.Id));
+    }
 }
