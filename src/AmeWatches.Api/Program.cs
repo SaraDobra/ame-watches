@@ -1,4 +1,6 @@
 using AmeWatches.Api.Data;
+using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using AmeWatches.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +10,18 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
-builder.Services.AddControllers();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("orders", context => RateLimitPartition.GetFixedWindowLimiter(
+        context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+});
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -31,6 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAngularDev");
+app.UseRateLimiter();
 app.UseAuthorization();
 app.MapControllers();
 
