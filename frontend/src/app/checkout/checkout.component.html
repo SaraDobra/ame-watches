@@ -1,0 +1,94 @@
+<section class="head">
+  <div class="container">
+    <h1>Porosia</h1>
+  </div>
+</section>
+
+<section class="container body">
+  @if (!cart.ready()) {
+    <div class="skeleton"></div>
+  } @else if (cart.items().length === 0) {
+    <div class="empty">
+      <h2>Shporta juaj është bosh</h2>
+      <p>Shtoni një orë para se të vazhdoni me porosinë.</p>
+      <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
+    </div>
+  } @else {
+    <form class="layout" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="fields">
+        <h2>Të dhënat e dërgesës</h2>
+
+        <div class="field" [class.field--bad]="invalid('customerName')">
+          <label for="customerName">Emri dhe mbiemri</label>
+          <input id="customerName" formControlName="customerName" autocomplete="name">
+          @if (invalid('customerName')) { <small>Shkruani emrin e plotë (të paktën 3 shkronja).</small> }
+        </div>
+
+        <div class="row">
+          <div class="field" [class.field--bad]="invalid('phone')">
+            <label for="phone">Telefoni</label>
+            <input id="phone" formControlName="phone" type="tel" autocomplete="tel" placeholder="+383 44 123 456">
+            @if (invalid('phone')) { <small>Shkruani një numër telefoni të vlefshëm.</small> }
+          </div>
+          <div class="field" [class.field--bad]="invalid('email')">
+            <label for="email">Email <span>(opsionale)</span></label>
+            <input id="email" formControlName="email" type="email" autocomplete="email">
+            @if (invalid('email')) { <small>Email-i nuk është i vlefshëm.</small> }
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field" [class.field--bad]="invalid('city')">
+            <label for="city">Qyteti</label>
+            <input id="city" formControlName="city" autocomplete="address-level2">
+            @if (invalid('city')) { <small>Shkruani qytetin.</small> }
+          </div>
+          <div class="field field--wide" [class.field--bad]="invalid('address')">
+            <label for="address">Adresa</label>
+            <input id="address" formControlName="address" autocomplete="street-address">
+            @if (invalid('address')) { <small>Shkruani adresën e plotë.</small> }
+          </div>
+        </div>
+
+        <h2>Mënyra e pagesës</h2>
+        <div class="pay">
+          <label class="option option--on">
+            <input type="radio" formControlName="paymentMethod" value="CashOnDelivery">
+            <span><strong>Pagesë në dorëzim</strong><small>Paguani kur ta merrni orën.</small></span>
+          </label>
+          <label class="option option--off">
+            <input type="radio" disabled>
+            <span><strong>Me kartë</strong><small>Së shpejti.</small></span>
+          </label>
+        </div>
+
+        @if (errors().length) {
+          <ul class="errors" role="alert">
+            @for (e of errors(); track e) { <li>{{ e }}</li> }
+          </ul>
+        }
+      </div>
+
+      <aside class="summary">
+        <h2>Porosia juaj</h2>
+        <ul class="items">
+          @for (item of cart.items(); track item.productId) {
+            <li>
+              <span>{{ item.brand }} {{ item.name }} <small>× {{ item.quantity }}</small></span>
+              <span>{{ item.price * item.quantity | number: '1.0-2' }} €</span>
+            </li>
+          }
+        </ul>
+        <dl>
+          <div><dt>Nëntotali</dt><dd>{{ cart.subtotal() | number: '1.0-2' }} €</dd></div>
+          <div><dt>Dërgesa</dt><dd>Falas</dd></div>
+          <div class="total"><dt>Totali</dt><dd>{{ cart.subtotal() | number: '1.0-2' }} €</dd></div>
+        </dl>
+        <button type="submit" class="btn btn--gold submit" [disabled]="submitting()">
+          {{ submitting() ? 'Duke dërguar...' : 'Konfirmo porosinë' }}
+        </button>
+        <p class="legal">Çmimi përfundimtar llogaritet nga ne në momentin e porosisë. <a routerLink="/shporta">Ndrysho shportën</a></p>
+      </aside>
+    </form>
+  }
+</section>

@@ -51,8 +51,16 @@
           <p class="desc">{{ product()!.description }}</p>
         }
 
-        <button type="button" class="btn btn--gold buy" disabled>Shto në shportë</button>
-        <p class="soon">Porositja online hapet së shpejti. Për porosi na shkruani në Instagram.</p>
+        <button type="button" class="btn buy" [disabled]="!product()!.inStock" (click)="addToCart()">
+          {{ product()!.inStock ? 'Shto në shportë' : 'Shitur' }}
+        </button>
+        <p class="cartnote" aria-live="polite">
+          @if (message()) {
+            <span class="warn">{{ message() }}</span>
+          } @else if (inCart() > 0) {
+            <span>Në shportë: {{ inCart() }} copë · <a routerLink="/shporta">Shiko shportën</a></span>
+          }
+        </p>
 
         <ul class="trust">
           @for (item of trust; track item) {

@@ -23,8 +23,11 @@ h1 { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 400; margin: 0.4rem 0 0
 .stock--out { color: var(--danger); }
 .desc { color: #4a463f; line-height: 1.8; margin: 0 0 1.8rem; max-width: 52ch; }
 .buy { width: 100%; max-width: 380px; text-align: center; background: var(--ink); border-color: var(--ink); color: #fff; }
-.buy:disabled { opacity: 0.55; }
-.soon { font-size: 0.82rem; color: var(--muted); margin: 0.7rem 0 1.8rem; }
+.buy:disabled { opacity: 0.55; cursor: not-allowed; }
+.buy:not(:disabled):hover { background: #2a2a2e; }
+.cartnote { font-size: 0.86rem; color: var(--muted); margin: 0.7rem 0 1.8rem; min-height: 1.4em; }
+.cartnote a { color: var(--gold-dark); }
+.warn { color: var(--danger); }
 
 .trust { list-style: none; padding: 1.2rem 0; margin: 0 0 2rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.4rem; font-size: 0.88rem; }
 .trust li { position: relative; padding-left: 1.4rem; }

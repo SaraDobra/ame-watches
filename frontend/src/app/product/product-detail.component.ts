@@ -9,6 +9,7 @@ import { ProductDetail } from '../models/catalog.models';
 import { genderLabel, typeLabel } from '../util/labels';
 import { WatchArtComponent } from '../shared/watch-art.component';
 import { SSR_RESPONSE } from '../util/ssr-response';
+import { CartService } from '../services/cart.service';
 
 interface Spec {
   label: string;
@@ -28,11 +29,13 @@ export class ProductDetailComponent {
   private readonly meta = inject(Meta);
   private readonly document = inject(DOCUMENT);
   private readonly response = inject(SSR_RESPONSE, { optional: true });
+  readonly cart = inject(CartService);
 
   product = signal<ProductDetail | null>(null);
   loading = signal(true);
   notFound = signal(false);
   selected = signal(0);
+  message = signal('');
 
   readonly trust = [
     'Garanci 1 vit nga amé watches',
@@ -43,7 +46,7 @@ export class ProductDetailComponent {
 
   constructor() {
     this.route.paramMap.pipe(
-      tap(() => { this.loading.set(true); this.notFound.set(false); this.selected.set(0); }),
+      tap(() => { this.loading.set(true); this.notFound.set(false); this.selected.set(0); this.message.set(''); }),
       switchMap(params => this.catalog.getProduct(params.get('slug') ?? '').pipe(
         catchError(() => of(null))
       )),
@@ -71,6 +74,19 @@ export class ProductDetailComponent {
     if (p.caseSizeMm) specs.push({ label: 'Diametri i kasës', value: `${p.caseSizeMm} mm` });
     if (p.waterResistanceM) specs.push({ label: 'Rezistenca ndaj ujit', value: `${p.waterResistanceM} m` });
     return specs;
+  }
+
+  addToCart(): void {
+    const product = this.product();
+    if (!product) return;
+
+    const result = this.cart.add(product);
+    this.message.set(result === 'max' ? 'Keni shtuar sasinë maksimale të disponueshme për këtë orë.' : '');
+  }
+
+  inCart(): number {
+    const product = this.product();
+    return product ? this.cart.quantityOf(product.id) : 0;
   }
 
   stockText(): string {

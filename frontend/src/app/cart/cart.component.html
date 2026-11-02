@@ -1,0 +1,69 @@
+<section class="head">
+  <div class="container">
+    <h1>Shporta</h1>
+  </div>
+</section>
+
+<section class="container body">
+  @if (!cart.ready()) {
+    <div class="skeleton"></div>
+  } @else if (cart.items().length === 0) {
+    <div class="empty">
+      <h2>Shporta juaj është bosh</h2>
+      <p>Zgjidhni një orë nga koleksioni ynë.</p>
+      @if (notice()) {
+        <p class="notice">{{ notice() }}</p>
+      }
+      <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
+    </div>
+  } @else {
+    @if (notice()) {
+      <p class="notice" role="status">{{ notice() }}</p>
+    }
+
+    <div class="layout">
+      <ul class="lines">
+        @for (item of cart.items(); track item.productId) {
+          <li class="line">
+            <a [routerLink]="['/ora', item.slug]" class="thumb">
+              @if (item.imageUrl) {
+                <img [src]="item.imageUrl" [alt]="item.brand + ' ' + item.name">
+              } @else {
+                <app-watch-art tone="black" [label]="item.name" />
+              }
+            </a>
+
+            <div class="meta">
+              <span class="brand">{{ item.brand }}</span>
+              <a [routerLink]="['/ora', item.slug]" class="name">{{ item.name }}</a>
+              <span class="code">{{ item.modelCode }}</span>
+              <button type="button" class="remove" (click)="cart.remove(item.productId)">Hiqe</button>
+            </div>
+
+            <div class="qty" role="group" [attr.aria-label]="'Sasia për ' + item.name">
+              <button type="button" (click)="change(item.productId, -1, item.quantity)" [disabled]="item.quantity <= 1" aria-label="Pakëso">−</button>
+              <span aria-live="polite">{{ item.quantity }}</span>
+              <button type="button" (click)="change(item.productId, 1, item.quantity)" [disabled]="item.quantity >= item.maxQuantity" aria-label="Shto">+</button>
+            </div>
+
+            <div class="amount">{{ item.price * item.quantity | number: '1.0-2' }} €</div>
+          </li>
+        }
+      </ul>
+
+      <aside class="summary">
+        <h2>Përmbledhja</h2>
+        <dl>
+          <div><dt>Nëntotali</dt><dd>{{ cart.subtotal() | number: '1.0-2' }} €</dd></div>
+          <div><dt>Dërgesa</dt><dd>Falas</dd></div>
+          <div class="total"><dt>Totali</dt><dd>{{ cart.subtotal() | number: '1.0-2' }} €</dd></div>
+        </dl>
+        <a routerLink="/porosia" class="btn btn--gold go">Vazhdo me porosinë</a>
+        <ul class="trust">
+          <li>Garanci 1 vit nga amé watches</li>
+          <li>Pagesë në dorëzim</li>
+        </ul>
+      </aside>
+    </div>
+  }
+</section>

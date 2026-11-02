@@ -1,0 +1,28 @@
+.wrap { max-width: 760px; padding-top: 3.4rem; padding-bottom: 2rem; }
+.done { text-align: center; margin-bottom: 2.4rem; }
+.check { display: inline-flex; width: 3.4rem; height: 3.4rem; align-items: center; justify-content: center; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold-dark); font-size: 1.5rem; margin-bottom: 1.2rem; }
+h1 { font-size: clamp(2rem, 4.5vw, 2.8rem); font-weight: 400; margin: 0 0 0.8rem; }
+.lead { color: #4a463f; line-height: 1.7; max-width: 50ch; margin: 0 auto 1rem; }
+.no { font-size: 0.9rem; color: var(--muted); letter-spacing: 0.06em; }
+.no strong { color: var(--ink); font-size: 1.05rem; letter-spacing: 0.12em; }
+
+.card { background: var(--paper); border: 1px solid var(--line); padding: 1.6rem; margin-bottom: 1.2rem; }
+.card h2 { font-size: 1.4rem; margin-bottom: 0.8rem; }
+.items { list-style: none; padding: 0; margin: 0 0 0.8rem; border-bottom: 1px solid var(--line); }
+.items li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.6rem 0; font-size: 0.94rem; }
+.items small { color: var(--muted); display: block; }
+dl { margin: 0; }
+dl div { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.94rem; }
+dd { margin: 0; }
+.total { font-weight: 500; font-size: 1.15rem; padding-top: 0.7rem; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem; }
+.two p { margin: 0; line-height: 1.7; }
+.two small { color: var(--muted); }
+.keep { color: var(--muted); font-size: 0.88rem; text-align: center; margin: 1.6rem 0; }
+.wrap > .btn { display: block; width: fit-content; margin: 0 auto; }
+.btn--dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.missing { text-align: center; padding: 4rem 0; }
+.missing p { color: var(--muted); margin: 0 0 2rem; }
+.skeleton { height: 360px; background: linear-gradient(100deg, #eee9de 30%, #f7f4ee 50%, #eee9de 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@media (max-width: 600px) { .two { grid-template-columns: 1fr; } }

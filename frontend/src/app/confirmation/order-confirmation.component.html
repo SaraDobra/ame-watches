@@ -1,0 +1,49 @@
+<section class="container wrap">
+  @if (loading()) {
+    <div class="skeleton"></div>
+  } @else if (!order()) {
+    <div class="missing">
+      <h1>Porosia nuk u gjet</h1>
+      <p>Lidhja nuk është e vlefshme ose porosia nuk ekziston.</p>
+      <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
+    </div>
+  } @else {
+    <div class="done">
+      <span class="check" aria-hidden="true">✓</span>
+      <h1>Faleminderit, {{ order()!.customerName }}</h1>
+      <p class="lead">Porosia juaj u regjistrua. Do t'ju kontaktojmë në <strong>{{ order()!.phone }}</strong> për ta konfirmuar dërgesën.</p>
+      <p class="no">Numri i porosisë <strong>{{ order()!.orderNo }}</strong></p>
+    </div>
+
+    <div class="card">
+      <h2>Çfarë porositët</h2>
+      <ul class="items">
+        @for (line of order()!.items; track line.productId) {
+          <li>
+            <span>{{ line.productName }} <small>{{ line.modelCode }} × {{ line.quantity }}</small></span>
+            <span>{{ line.lineTotal | number: '1.0-2' }} €</span>
+          </li>
+        }
+      </ul>
+      <dl>
+        <div><dt>Nëntotali</dt><dd>{{ order()!.subtotal | number: '1.0-2' }} €</dd></div>
+        <div><dt>Dërgesa</dt><dd>{{ order()!.shipping === 0 ? 'Falas' : (order()!.shipping | number: '1.0-2') + ' €' }}</dd></div>
+        <div class="total"><dt>Totali</dt><dd>{{ order()!.total | number: '1.0-2' }} €</dd></div>
+      </dl>
+    </div>
+
+    <div class="card two">
+      <div>
+        <h2>Dërgesa</h2>
+        <p>{{ order()!.customerName }}<br>{{ order()!.address }}<br>{{ order()!.city }}</p>
+      </div>
+      <div>
+        <h2>Pagesa</h2>
+        <p>{{ paymentText(order()!) }}<br><small>Regjistruar më {{ order()!.createdAt | date: 'dd.MM.yyyy HH:mm' }}</small></p>
+      </div>
+    </div>
+
+    <p class="keep">Ruani këtë lidhje për ta parë porosinë më vonë. Garancia 1 vit nga amé watches vlen për çdo orë.</p>
+    <a routerLink="/ora" class="btn btn--dark">Vazhdo me blerjet</a>
+  }
+</section>
