@@ -1,0 +1,14 @@
+.wrap { max-width: 560px; padding-top: 3rem; padding-bottom: 3rem; }
+.banner { background: #fff3cd; color: #6b4e00; border: 1px dashed #c9a227; text-align: center; padding: 0.7rem; font-size: 0.78rem; letter-spacing: 0.18em; margin-bottom: 1.6rem; }
+.box { background: var(--paper); border: 1px solid var(--line); padding: 2.4rem 2rem; text-align: center; }
+.label { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-dark); }
+h1 { font-size: 3rem; font-weight: 500; margin: 0.4rem 0 0.6rem; }
+p { color: #4a463f; margin: 0 0 0.6rem; }
+.hint { font-size: 0.86rem; color: var(--muted); margin: 1.2rem 0 1.8rem; }
+.actions { display: grid; gap: 0.8rem; }
+.btn--gold { background: var(--ink); border-color: var(--ink); color: #fff; }
+.btn--ghost-dark { color: var(--ink); border-color: var(--ink); }
+.btn--ghost-dark:hover:not(:disabled) { background: rgba(12, 12, 13, 0.06); }
+.errors { margin: 0 0 1.2rem; padding: 0.8rem 1rem 0.8rem 2rem; background: #fdecea; color: var(--danger); font-size: 0.9rem; text-align: left; }
+.skeleton { height: 280px; background: linear-gradient(100deg, #eee9de 30%, #f7f4ee 50%, #eee9de 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }

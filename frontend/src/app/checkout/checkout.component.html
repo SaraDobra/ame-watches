@@ -52,13 +52,13 @@
 
         <h2>Mënyra e pagesës</h2>
         <div class="pay">
-          <label class="option option--on">
+          <label class="option" [class.option--selected]="form.controls.paymentMethod.value === 'CashOnDelivery'">
             <input type="radio" formControlName="paymentMethod" value="CashOnDelivery">
             <span><strong>Pagesë në dorëzim</strong><small>Paguani kur ta merrni orën.</small></span>
           </label>
-          <label class="option option--off">
-            <input type="radio" disabled>
-            <span><strong>Me kartë</strong><small>Së shpejti.</small></span>
+          <label class="option" [class.option--selected]="form.controls.paymentMethod.value === 'Card'">
+            <input type="radio" formControlName="paymentMethod" value="Card">
+            <span><strong>Me kartë</strong><small>Do të ridrejtoheni te faqja e sigurt e pagesës. Porosia ruhet për 30 minuta.</small></span>
           </label>
         </div>
 
@@ -85,7 +85,7 @@
           <div class="total"><dt>Totali</dt><dd>{{ cart.subtotal() | number: '1.0-2' }} €</dd></div>
         </dl>
         <button type="submit" class="btn btn--gold submit" [disabled]="submitting()">
-          {{ submitting() ? 'Duke dërguar...' : 'Konfirmo porosinë' }}
+          {{ submitting() ? 'Duke dërguar...' : (form.controls.paymentMethod.value === 'Card' ? 'Vazhdo te pagesa' : 'Konfirmo porosinë') }}
         </button>
         <p class="legal">Çmimi përfundimtar llogaritet nga ne në momentin e porosisë. <a routerLink="/shporta">Ndrysho shportën</a></p>
       </aside>

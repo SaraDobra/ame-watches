@@ -82,6 +82,10 @@ export class CheckoutComponent {
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: created => {
         this.cart.clear();
+        if (created.paymentUrl) {
+          window.location.assign(created.paymentUrl);
+          return;
+        }
         this.router.navigate(['/porosia/konfirmim', created.orderNo], { queryParams: { token: created.accessToken } });
       },
       error: err => {

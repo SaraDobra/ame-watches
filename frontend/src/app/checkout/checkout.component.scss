@@ -17,8 +17,7 @@
 
 .pay { display: grid; gap: 0.7rem; }
 .option { display: flex; gap: 0.9rem; align-items: flex-start; padding: 1rem 1.1rem; border: 1px solid var(--line); background: var(--paper); cursor: pointer; }
-.option--on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
-.option--off { opacity: 0.55; cursor: not-allowed; }
+.option--selected { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
 .option input { margin-top: 0.3rem; accent-color: var(--ink); }
 .option span { display: flex; flex-direction: column; }
 .option small { color: var(--muted); font-size: 0.84rem; }

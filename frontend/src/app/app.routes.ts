@@ -5,6 +5,7 @@ import { ProductDetailComponent } from './product/product-detail.component';
 import { CartComponent } from './cart/cart.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { OrderConfirmationComponent } from './confirmation/order-confirmation.component';
+import { PaymentSimulatorComponent } from './payment/simulator.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'shporta', component: CartComponent },
   { path: 'porosia', component: CheckoutComponent },
   { path: 'porosia/konfirmim/:orderNo', component: OrderConfirmationComponent },
+  { path: 'pagesa/simulator/:sessionId', component: PaymentSimulatorComponent },
   { path: '**', redirectTo: '' }
 ];
