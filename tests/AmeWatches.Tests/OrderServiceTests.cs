@@ -11,7 +11,7 @@ public class OrderServiceTests
     {
         var db = new TestDb();
         await CatalogFixture.ApplyAsync(db.Context);
-        return (db, new OrderService(db.Context));
+        return (db, new PaymentTestKit(db.Context).Orders);
     }
 
     private static CreateOrderRequest Request(params (int productId, int quantity)[] lines)
@@ -140,20 +140,6 @@ public class OrderServiceTests
         var item = await db.Context.OrderItems.SingleAsync();
         Assert.Equal(5, item.Quantity);
         Assert.Equal(OrderFailure.InvalidItems, tooMany.Failure);
-    }
-
-    [Fact]
-    public async Task CreateOrder_CardPayment_IsNotAvailableYet()
-    {
-        var (db, service) = await Setup();
-        using var _ = db;
-        var product = await db.Context.Products.FirstAsync();
-        var request = Request((product.Id, 1)) with { PaymentMethod = PaymentMethod.Card };
-
-        var result = await service.CreateOrder(request);
-
-        Assert.Equal(OrderFailure.PaymentUnavailable, result.Failure);
-        Assert.Equal(0, await db.Context.Orders.CountAsync());
     }
 
     [Fact]

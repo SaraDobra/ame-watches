@@ -88,10 +88,17 @@ namespace AmeWatches.Api.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("PaymentSessionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PaymentStatus")
                         .IsRequired()
@@ -124,6 +131,10 @@ namespace AmeWatches.Api.Migrations
 
                     b.HasIndex("OrderNo")
                         .IsUnique();
+
+                    b.HasIndex("PaymentSessionId")
+                        .IsUnique()
+                        .HasFilter("[PaymentSessionId] IS NOT NULL");
 
                     b.HasIndex("Status", "CreatedAt");
 

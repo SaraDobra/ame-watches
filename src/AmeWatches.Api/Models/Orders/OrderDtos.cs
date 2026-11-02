@@ -18,7 +18,7 @@ public record CreateOrderRequest(
     [Required, MinLength(1), MaxLength(20)] List<OrderItemRequest> Items
 );
 
-public record OrderCreatedResponse(string OrderNo, string AccessToken, decimal Total);
+public record OrderCreatedResponse(string OrderNo, string AccessToken, decimal Total, string? PaymentUrl = null);
 
 public record OrderLineResponse(
     int ProductId,
@@ -43,6 +43,7 @@ public record OrderResponse(
     decimal Shipping,
     decimal Total,
     DateTime CreatedAt,
+    DateTime? PaidAt,
     IReadOnlyList<OrderLineResponse> Items
 );
 

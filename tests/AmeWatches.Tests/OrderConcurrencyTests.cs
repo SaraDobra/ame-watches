@@ -30,7 +30,7 @@ public class OrderConcurrencyTests
         var attempts = Enumerable.Range(0, 10).Select(async _ =>
         {
             await using var context = sql.NewContext();
-            return await new OrderService(context).CreateOrder(request);
+            return await new PaymentTestKit(context).Orders.CreateOrder(request);
         });
         var results = await Task.WhenAll(attempts);
 

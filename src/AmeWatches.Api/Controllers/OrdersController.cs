@@ -22,6 +22,7 @@ public class OrdersController : ControllerBase
         {
             null => CreatedAtAction(nameof(Get), new { orderNo = result.Created!.OrderNo, token = result.Created.AccessToken }, result.Created),
             OrderFailure.OutOfStock => Conflict(new { message = result.Message }),
+            OrderFailure.PaymentUnavailable => StatusCode(StatusCodes.Status503ServiceUnavailable, new { message = result.Message }),
             _ => BadRequest(new { message = result.Message })
         };
     }
