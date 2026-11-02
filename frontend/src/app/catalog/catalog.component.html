@@ -87,8 +87,8 @@
       </div>
     } @else if (result()) {
       <div class="grid">
-        @for (product of result()!.items; track product.id) {
-          <app-product-card [product]="product" />
+        @for (product of result()!.items; track product.id; let i = $index) {
+          <app-product-card [product]="product" [style.--i]="i" />
         }
       </div>
 

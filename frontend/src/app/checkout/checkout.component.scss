@@ -1,7 +1,7 @@
 .head { background: var(--ink); color: var(--ivory); padding: 2.6rem 0 2.4rem; }
 .head h1 { font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 400; margin: 0; }
 .body { padding-top: 2.4rem; padding-bottom: 2rem; }
-.layout { display: grid; grid-template-columns: 1fr 380px; gap: 3.4rem; align-items: start; }
+.layout { animation: rise 0.7s var(--ease) both; display: grid; grid-template-columns: 1fr 380px; gap: 3.4rem; align-items: start; }
 .fields h2, .summary h2 { font-size: 1.6rem; margin: 0 0 1.2rem; }
 .fields h2:not(:first-child) { margin-top: 2.2rem; }
 

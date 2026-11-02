@@ -17,6 +17,7 @@ export interface ProductListItem {
   gender: string;
   type: string;
   imageUrl: string | null;
+  secondImageUrl: string | null;
 }
 
 export interface PagedResult<T> {

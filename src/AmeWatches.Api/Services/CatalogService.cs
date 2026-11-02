@@ -37,7 +37,8 @@ public class CatalogService : ICatalogService
                 p.Stock > 0,
                 p.Gender.ToString(),
                 p.Type.ToString(),
-                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault()))
+                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault(),
+                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).Skip(1).FirstOrDefault()))
             .ToListAsync();
 
         return new PagedResult<ProductListItem>(items, query.Page, query.PageSize, total);

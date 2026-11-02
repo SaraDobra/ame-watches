@@ -3,12 +3,36 @@
     <div class="sk-media"></div>
     <div class="sk-info"></div>
   </section>
+
+  @if (product()!.inStock) {
+    <div class="mobilebar">
+      <div>
+        <span class="mb-name">{{ product()!.brand }} {{ product()!.name }}</span>
+        <strong>{{ product()!.price | number: '1.0-2' }} €</strong>
+      </div>
+      <button type="button" class="btn buy-sticky" [class.buy--done]="added()" (click)="addToCart()">
+        {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
+      </button>
+    </div>
+  }
 } @else if (notFound() || !product()) {
   <section class="container missing">
     <h1>Ora nuk u gjet</h1>
     <p>Kjo orë nuk ekziston ose nuk është më e disponueshme.</p>
     <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
   </section>
+
+  @if (product()!.inStock) {
+    <div class="mobilebar">
+      <div>
+        <span class="mb-name">{{ product()!.brand }} {{ product()!.name }}</span>
+        <strong>{{ product()!.price | number: '1.0-2' }} €</strong>
+      </div>
+      <button type="button" class="btn buy-sticky" [class.buy--done]="added()" (click)="addToCart()">
+        {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
+      </button>
+    </div>
+  }
 } @else {
   <section class="container detail">
     <nav class="crumbs" aria-label="Rruga">
@@ -20,9 +44,12 @@
 
     <div class="layout">
       <div class="gallery">
-        <div class="stage">
+        <div class="stage" (mousemove)="zoom($event)">
           @if (product()!.images.length) {
-            <img [src]="product()!.images[selected()]" [alt]="product()!.brand + ' ' + product()!.name + ' — foto ' + (selected() + 1)">
+            @for (image of [product()!.images[selected()]]; track image) {
+              <img class="photo" [src]="image" [style.transform-origin]="origin()" width="900" height="900" fetchpriority="high"
+                   [alt]="product()!.brand + ' ' + product()!.name + ' — foto ' + (selected() + 1)">
+            }
           } @else {
             <app-watch-art tone="black" [label]="product()!.brand + ' ' + product()!.name" />
           }
@@ -32,7 +59,7 @@
             @for (image of product()!.images; track image; let i = $index) {
               <button type="button" role="tab" [class.on]="i === selected()" [attr.aria-selected]="i === selected()"
                       [attr.aria-label]="'Foto ' + (i + 1)" (click)="selected.set(i)">
-                <img [src]="image" alt="" loading="lazy">
+                <img appFade [src]="image" alt="" width="84" height="84" loading="lazy">
               </button>
             }
           </div>
@@ -51,8 +78,8 @@
           <p class="desc">{{ product()!.description }}</p>
         }
 
-        <button type="button" class="btn buy" [disabled]="!product()!.inStock" (click)="addToCart()">
-          {{ product()!.inStock ? 'Shto në shportë' : 'Shitur' }}
+        <button type="button" class="btn buy" [class.buy--done]="added()" [disabled]="!product()!.inStock" (click)="addToCart()">
+          {{ !product()!.inStock ? 'Shitur' : added() ? 'U shtua ✓' : 'Shto në shportë' }}
         </button>
         <p class="cartnote" aria-live="polite">
           @if (message()) {
@@ -77,4 +104,16 @@
       </div>
     </div>
   </section>
+
+  @if (product()!.inStock) {
+    <div class="mobilebar">
+      <div>
+        <span class="mb-name">{{ product()!.brand }} {{ product()!.name }}</span>
+        <strong>{{ product()!.price | number: '1.0-2' }} €</strong>
+      </div>
+      <button type="button" class="btn buy-sticky" [class.buy--done]="added()" (click)="addToCart()">
+        {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
+      </button>
+    </div>
+  }
 }

@@ -49,7 +49,8 @@ public record ProductListItem(
     bool InStock,
     string Gender,
     string Type,
-    string? ImageUrl
+    string? ImageUrl,
+    string? SecondImageUrl
 );
 
 public record ProductDetail(

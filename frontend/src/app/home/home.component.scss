@@ -1,41 +1,53 @@
-.hero { background: radial-gradient(ellipse at 75% 40%, #2a2620 0%, #0c0c0d 62%); color: var(--ivory); overflow: hidden; }
-.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; gap: 3rem; min-height: 640px; padding-top: 3rem; padding-bottom: 3rem; }
+.rise { animation: rise 0.9s var(--ease) both; animation-delay: var(--d, 0ms); }
+
+.hero { background: radial-gradient(ellipse at 78% 45%, #2e2820 0%, #0c0c0d 62%); color: var(--ivory); overflow: hidden; }
+.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; gap: 3rem; min-height: 680px; padding-top: 3rem; padding-bottom: 3rem; }
 .eyebrow { display: block; font-size: 0.72rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1.4rem; }
 .eyebrow--dark { color: var(--gold-dark); margin-bottom: 0.8rem; }
 h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 400; line-height: 1.08; margin: 0 0 1.4rem; max-width: 14ch; }
 .hero-text p { font-size: 1.05rem; line-height: 1.8; color: #cfc8b8; max-width: 44ch; margin: 0 0 2.4rem; }
 .actions { display: flex; gap: 1rem; flex-wrap: wrap; }
-.hero-art { position: relative; max-width: 400px; width: 100%; margin: 0 auto; }
-.hero-art app-watch-art { position: relative; filter: drop-shadow(0 40px 50px rgba(0, 0, 0, 0.6)); }
-.glow { position: absolute; inset: 12% -25% 12% -25%; background: radial-gradient(circle, rgba(184, 151, 90, 0.35), transparent 62%); filter: blur(30px); }
+
+.hero-art { position: relative; width: min(100%, 380px); margin: 0 auto; }
+.arch { position: relative; aspect-ratio: 4 / 5; border-radius: 999px 999px 4px 4px; overflow: hidden; box-shadow: 0 40px 70px -30px rgba(0, 0, 0, 0.8); }
+.arch img { width: 100%; height: 100%; object-fit: cover; animation: drift 14s ease-in-out infinite alternate; }
+.frame { position: absolute; inset: -14px -14px 14px 14px; border: 1px solid rgba(184, 151, 90, 0.65); border-radius: 999px 999px 4px 4px; pointer-events: none; }
+.seal { position: absolute; left: -2.2rem; bottom: 2.6rem; width: 6.4rem; height: 6.4rem; border-radius: 50%; background: var(--ink); border: 1px solid var(--gold); color: var(--gold-light); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 0.64rem; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1.4; box-shadow: 0 18px 30px -14px rgba(0, 0, 0, 0.7); }
+.seal strong { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0; text-transform: none; color: #fff; font-weight: 500; }
+@keyframes drift { from { transform: scale(1.02); } to { transform: scale(1.1) translateY(-1.5%); } }
 
 .section { padding: 6rem 0; }
 .section--ivory { background: #efe9dc; }
 .section-head { text-align: center; max-width: 560px; margin: 0 auto 3.4rem; }
 .section-head h2 { font-size: clamp(2rem, 3.4vw, 2.8rem); font-weight: 400; margin: 0 0 0.8rem; }
-.section-head p { color: var(--muted); margin: 0; line-height: 1.7; }
+.section-head h2::after { content: ''; display: block; width: 44px; height: 1px; background: var(--gold); margin: 1rem auto 0; }
+.section-head p { color: var(--muted); margin: 0.6rem 0 0; line-height: 1.7; }
 
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.6rem; }
 .skeleton { height: 420px; background: linear-gradient(100deg, #eee9de 30%, #f7f4ee 50%, #eee9de 70%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 .note { text-align: center; color: var(--muted); padding: 2rem 0; }
+.more { text-align: center; margin-top: 3rem; }
+.btn--dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn--dark:hover { background: #2a2a2e; }
 
 .brands { background: var(--ink); }
 .brands-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; max-width: none; }
-.brand { padding: 7rem 4rem 5rem; color: var(--ivory); position: relative; min-height: 460px; display: flex; flex-direction: column; justify-content: flex-start; }
+.brand { padding: 7rem 4rem 5rem; color: var(--ivory); position: relative; min-height: 460px; display: flex; flex-direction: column; justify-content: flex-start; overflow: hidden; }
+.brand::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 80% 20%, rgba(184, 151, 90, 0.22), transparent 55%); opacity: 0; transition: opacity 0.7s var(--ease); pointer-events: none; }
+.brand:hover::before { opacity: 1; }
+.brand > * { position: relative; }
 .brand--casio { background: linear-gradient(135deg, #17171a, #2a2a30); }
 .brand--qq { background: linear-gradient(135deg, #2b2418, #14110b); border-left: 1px solid rgba(184, 151, 90, 0.35); }
 .brand h2 { font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 400; margin: 0 0 1rem; }
 .brand p { color: #c4bdad; line-height: 1.8; max-width: 38ch; margin: 0 0 1.8rem; }
-.more { text-align: center; margin-top: 3rem; }
-.btn--dark { background: var(--ink); color: #fff; border-color: var(--ink); }
-.btn--dark:hover { background: #2a2a2e; }
-.link { font-size: 0.72rem; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 0.3rem; align-self: flex-start; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); }
-.link:hover { color: #fff; }
+.link { font-size: 0.72rem; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 0.3rem; align-self: flex-start; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); transition: color 0.3s var(--ease), letter-spacing 0.4s var(--ease); }
+.link:hover { color: #fff; letter-spacing: 0.3em; }
 
 .benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; }
 .benefit { text-align: center; padding: 0 0.6rem; }
-.num { display: block; width: 36px; height: 1px; background: var(--gold); margin: 0 auto 1.4rem; }
+.icon { width: 46px; height: 46px; color: var(--gold-dark); margin-bottom: 1.1rem; transition: transform 0.6s var(--ease); }
+.benefit:hover .icon { transform: translateY(-4px) scale(1.06); }
 .benefit h3 { font-size: 1.5rem; margin: 0 0 0.6rem; }
 .benefit p { color: var(--muted); line-height: 1.7; font-size: 0.93rem; margin: 0; }
 
@@ -43,6 +55,8 @@ h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 400; line-height: 1.08;
   .hero-grid { grid-template-columns: 1fr; min-height: 0; text-align: center; }
   h1, .hero-text p { margin-left: auto; margin-right: auto; }
   .actions { justify-content: center; }
+  .hero-art { width: min(78%, 330px); margin-top: 1rem; }
+  .seal { left: -1rem; width: 5.4rem; height: 5.4rem; }
   .grid { grid-template-columns: repeat(2, 1fr); }
   .benefits { grid-template-columns: repeat(2, 1fr); }
   .brands-grid { grid-template-columns: 1fr; }
