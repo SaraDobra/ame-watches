@@ -2,6 +2,7 @@ import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from '../services/seo.service';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { CatalogService } from '../services/catalog.service';
 import { Brand, PagedResult, PriceRange, ProductFilter, ProductListItem } from '../models/catalog.models';
@@ -35,6 +36,7 @@ export class CatalogComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  private readonly seo = inject(SeoService);
 
   readonly sorts = SORTS;
   readonly genders = GENDERS;
@@ -49,6 +51,7 @@ export class CatalogComponent implements OnInit {
 
   ngOnInit(): void {
     this.title.setTitle('Koleksioni | amé watches');
+    this.seo.setCanonical('/ora');
     this.meta.updateTag({ name: 'description', content: 'Ora origjinale Casio dhe Q&Q për gra dhe për burra, me garanci 1 vit dhe dërgesë falas.' });
 
     this.catalog.getBrands().pipe(catchError(() => of([] as Brand[])), takeUntilDestroyed(this.destroyRef))

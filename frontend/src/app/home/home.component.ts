@@ -1,3 +1,4 @@
+import { SeoService } from '../services/seo.service';
 import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -14,6 +15,7 @@ import { RevealDirective } from '../directives/reveal.directive';
 })
 export class HomeComponent implements OnInit {
   private readonly catalog = inject(CatalogService);
+  private readonly seo = inject(SeoService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   featured = signal<ProductListItem[]>([]);
@@ -29,6 +31,7 @@ export class HomeComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.seo.setCanonical('/');
     if (!this.isBrowser) return;
 
     this.catalog.getProducts({ pageSize: 4, sort: 'Newest' }).subscribe({

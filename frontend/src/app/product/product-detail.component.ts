@@ -3,9 +3,11 @@ import { DOCUMENT, DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from '../services/seo.service';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { CatalogService } from '../services/catalog.service';
 import { ProductDetail } from '../models/catalog.models';
+import { imageSrc } from '../util/image';
 import { genderLabel, typeLabel } from '../util/labels';
 import { WatchArtComponent } from '../shared/watch-art.component';
 import { SSR_RESPONSE } from '../util/ssr-response';
@@ -30,6 +32,7 @@ export class ProductDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
+  private readonly seo = inject(SeoService);
   private readonly document = inject(DOCUMENT);
   private readonly response = inject(SSR_RESPONSE, { optional: true });
   readonly cart = inject(CartService);
@@ -128,6 +131,10 @@ export class ProductDetailComponent {
     this.meta.updateTag({ name: 'robots', content: 'index,follow' });
     this.meta.updateTag({ property: 'og:title', content: heading });
     this.meta.updateTag({ property: 'og:description', content: description });
+    this.seo.setCanonical(`/ora/${product.slug}`);
+    const origin = this.document.location?.origin ?? '';
+    const first = imageSrc(product.images[0]);
+    this.seo.setImage(first ? (first.startsWith('http') ? first : origin + first) : null);
 
     const existing = this.document.getElementById('product-jsonld');
     existing?.remove();
