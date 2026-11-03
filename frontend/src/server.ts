@@ -28,6 +28,13 @@ const apiBase = process.env['API_URL'] ?? environment.apiUrl;
  * ```
  */
 
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
 /**
  * robots.txt dhe sitemap.xml: domeni merret nga kërkesa, pra nuk ka adresë të shkruar me dorë.
  */

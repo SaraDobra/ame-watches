@@ -15,6 +15,7 @@ using AmeWatches.Api.Services.Admin;
 using AmeWatches.Api.Services.Auth;
 using AmeWatches.Api.Services.Payments;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
@@ -148,15 +149,39 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    // API-ja del në internet vetëm përmes proxy-t; nga ai besojmë IP-në e klientit.
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+
+app.UseForwardedHeaders();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
+app.Use(async (context, next) =>
+{
+    var headers = context.Response.Headers;
+    headers["X-Content-Type-Options"] = "nosniff";
+    headers["X-Frame-Options"] = "DENY";
+    headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    await next();
+});
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    await SeedData.InitializeAsync(app.Services);
 }
 
+// Krijon/përditëson databazën edhe në prodhim; katalogu fillestar futet vetëm nëse s'ka asnjë brend.
+await SeedData.InitializeAsync(app.Services);
 await AdminSeeder.EnsureAdmin(app.Services);
 
 var uploads = app.Services.GetRequiredService<LocalImageStorage>();
@@ -177,5 +202,7 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapGet("/health", async (AppDbContext db) =>
+    await db.Database.CanConnectAsync() ? Results.Ok(new { status = "ok" }) : Results.StatusCode(503));
 
 app.Run();
