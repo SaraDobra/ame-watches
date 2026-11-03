@@ -1,9 +1,20 @@
 using AmeWatches.Api.Data;
+using AmeWatches.Api.Data.Entities;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using AmeWatches.Api.Models.Auth;
 using AmeWatches.Api.Models.Payments;
+using AmeWatches.Api.Models.Storage;
+using AmeWatches.Api.Services.Storage;
 using AmeWatches.Api.Services;
+using AmeWatches.Api.Services.Admin;
+using AmeWatches.Api.Services.Auth;
 using AmeWatches.Api.Services.Payments;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +46,9 @@ builder.Services.AddHostedService<PaymentExpiryService>();
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("login", context => RateLimitPartition.GetFixedWindowLimiter(
+        context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        _ => new FixedWindowRateLimiterOptions { PermitLimit = 8, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
     options.AddPolicy("orders", context => RateLimitPartition.GetFixedWindowLimiter(
         context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
         _ => new FixedWindowRateLimiterOptions { PermitLimit = 5, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
@@ -44,6 +58,63 @@ builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var jwtOptions = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>() ?? new JwtOptions();
+if (string.IsNullOrWhiteSpace(jwtOptions.SecretKey) || Encoding.UTF8.GetByteCount(jwtOptions.SecretKey) < 32)
+{
+    if (!builder.Environment.IsDevelopment())
+        throw new InvalidOperationException("Jwt:SecretKey mungon ose është më i shkurtër se 32 karaktere.");
+
+    jwtOptions.SecretKey = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
+}
+builder.Services.Configure<JwtOptions>(o =>
+{
+    o.SecretKey = jwtOptions.SecretKey;
+    o.Issuer = jwtOptions.Issuer;
+    o.Audience = jwtOptions.Audience;
+    o.ExpiresMinutes = jwtOptions.ExpiresMinutes;
+});
+builder.Services.Configure<AdminSeedOptions>(builder.Configuration.GetSection(AdminSeedOptions.SectionName));
+
+builder.Services.AddIdentityCore<AppUser>(options =>
+    {
+        options.Password.RequiredLength = 10;
+        options.Password.RequireNonAlphanumeric = false;
+        options.User.RequireUniqueEmail = true;
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+        options.Lockout.AllowedForNewUsers = true;
+    })
+    .AddRoles<IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtOptions.Audience,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey!)),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(1),
+            RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+            NameClaimType = "name"
+        };
+    });
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(StorageOptions.SectionName));
+builder.Services.AddSingleton<LocalImageStorage>();
+builder.Services.AddSingleton<IImageStorage>(sp => sp.GetRequiredService<LocalImageStorage>());
+builder.Services.AddScoped<IAdminImageService, AdminImageService>();
+builder.Services.AddScoped<IAdminProductService, AdminProductService>();
+builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 
 builder.Services.AddCors(options =>
 {
@@ -62,8 +133,24 @@ if (app.Environment.IsDevelopment())
     await SeedData.InitializeAsync(app.Services);
 }
 
+await AdminSeeder.EnsureAdmin(app.Services);
+
+var uploads = app.Services.GetRequiredService<LocalImageStorage>();
+Directory.CreateDirectory(uploads.Root);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploads.Root),
+    RequestPath = "/uploads",
+    OnPrepareResponse = context =>
+    {
+        context.Context.Response.Headers.CacheControl = "public,max-age=31536000,immutable";
+        context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    }
+});
+
 app.UseCors("AllowAngularDev");
 app.UseRateLimiter();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
