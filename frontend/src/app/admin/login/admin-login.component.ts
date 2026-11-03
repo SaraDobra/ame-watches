@@ -43,7 +43,7 @@ import { AdminAuthService } from '../admin-auth.service';
   `,
   styles: `
     .wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: radial-gradient(ellipse at 70% 20%, #2e2820, #0c0c0d 65%); }
-    .box { width: 100%; max-width: 400px; background: var(--paper); padding: 2.2rem 2rem; display: flex; flex-direction: column; gap: 0.2rem; animation: rise 0.7s var(--ease) both; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7); }
+    .box { width: 100%; max-width: 420px; background: var(--paper); border-radius: var(--radius-lg); padding: 2.4rem 2.2rem; display: flex; flex-direction: column; gap: 0.2rem; animation: rise 0.7s var(--ease) both; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7); }
     h1 { font-size: 1.7rem; margin: 1.4rem 0 1rem; font-weight: 500; }
     .pw { position: relative; display: flex; }
     .pw input { flex: 1; padding-right: 4.6rem; }

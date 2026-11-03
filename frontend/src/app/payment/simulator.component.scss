@@ -1,6 +1,6 @@
 .wrap { max-width: 560px; padding-top: 3rem; padding-bottom: 3rem; }
-.banner { background: #fff3cd; color: #6b4e00; border: 1px dashed #c9a227; text-align: center; padding: 0.7rem; font-size: 0.78rem; letter-spacing: 0.18em; margin-bottom: 1.6rem; }
-.box { background: var(--paper); border: 1px solid var(--line); padding: 2.4rem 2rem; text-align: center; }
+.banner { border-radius: var(--radius-sm); background: #fff3cd; color: #6b4e00; border: 1px dashed #c9a227; text-align: center; padding: 0.7rem; font-size: 0.78rem; letter-spacing: 0.18em; margin-bottom: 1.6rem; }
+.box { border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); background: var(--paper); border: 1px solid var(--line); padding: 2.4rem 2rem; text-align: center; }
 .label { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-dark); }
 h1 { font-size: 3rem; font-weight: 500; margin: 0.4rem 0 0.6rem; }
 p { color: #4a463f; margin: 0 0 0.6rem; }

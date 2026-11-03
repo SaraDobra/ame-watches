@@ -58,3 +58,17 @@ export interface ProductDetail {
   movement: string | null;
   images: string[];
 }
+
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
+export interface ProductSuggestion {
+  name: string;
+  brand: string;
+  modelCode: string;
+  slug: string;
+  price: number;
+  imageUrl: string | null;
+}

@@ -33,14 +33,14 @@ import { CartService } from '../services/cart.service';
     </header>
   `,
   styles: `
-    .topbar { background: var(--ink); color: var(--gold-light); text-align: center; font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; padding: 0.6rem 1rem; }
+    .topbar { background: var(--ink); color: var(--gold-light); text-align: center; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; padding: 0.6rem 1rem; }
     header { position: sticky; top: 0; z-index: 20; background: rgba(247, 244, 238, 0.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); transition: box-shadow 0.35s var(--ease); }
     .header--small { box-shadow: 0 10px 30px -20px rgba(12, 12, 13, 0.45); }
     .header--small .bar { padding-top: 0.55rem; padding-bottom: 0.55rem; }
     .bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-top: 1rem; padding-bottom: 1rem; transition: padding 0.35s var(--ease); }
     nav { display: flex; align-items: center; gap: 2rem; }
     .right { justify-content: flex-end; }
-    nav a { display: inline-flex; align-items: center; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; color: var(--ink); position: relative; padding: 0.3rem 0; }
+    nav a { display: inline-flex; align-items: center; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; color: var(--ink); position: relative; padding: 0.3rem 0; }
     nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--gold); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
     nav a:hover::after { transform: scaleX(1); }
     .brand { text-decoration: none; }

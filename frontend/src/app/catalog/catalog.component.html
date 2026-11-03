@@ -15,9 +15,8 @@
 
   <aside class="filters" [class.filters--open]="filtersOpen()">
     <div class="group">
-      <label class="label" for="search">Kërko</label>
-      <input id="search" type="search" placeholder="Emri ose kodi i modelit" [value]="filter().search ?? ''"
-             (change)="setSearch($event)">
+      <span class="label">Kërko</span>
+      <app-search-box [value]="filter().search ?? ''" (search)="setFilter({ search: $event })" />
     </div>
 
     <div class="group">
@@ -41,14 +40,17 @@
       </div>
     </div>
 
-    <div class="group">
-      <span class="label">Çmimi (€)</span>
-      <div class="range">
-        <input type="number" min="0" placeholder="Nga" aria-label="Çmimi minimal" [value]="filter().minPrice ?? ''" (change)="setPrice('minPrice', $event)">
-        <span>–</span>
-        <input type="number" min="0" placeholder="Deri" aria-label="Çmimi maksimal" [value]="filter().maxPrice ?? ''" (change)="setPrice('maxPrice', $event)">
+    @if (bounds(); as range) {
+      <div class="group">
+        <span class="label">Çmimi</span>
+        @if (range.max > range.min) {
+          <app-price-range [min]="range.min" [max]="range.max" [from]="filter().minPrice ?? null" [to]="filter().maxPrice ?? null"
+                           (changed)="setPrice($event)" />
+        } @else {
+          <p class="single">Të gjitha orët kushtojnë {{ range.min }} €.</p>
+        }
       </div>
-    </div>
+    }
 
     @if (hasFilters()) {
       <button type="button" class="clear" (click)="clearFilters()">Pastro filtrat</button>

@@ -69,6 +69,41 @@ public class CatalogService : ICatalogService
             product.CaseSizeMm, product.WaterResistanceM, product.Movement, product.Images);
     }
 
+    public async Task<PriceRange> GetPriceRange()
+    {
+        var prices = _db.Products.AsNoTracking().Where(p => p.IsActive).Select(p => p.Price);
+        if (!await prices.AnyAsync())
+            return new PriceRange(0, 0);
+
+        return new PriceRange(await prices.MinAsync(), await prices.MaxAsync());
+    }
+
+    public async Task<List<ProductSuggestion>> Suggest(string query, int limit = 6)
+    {
+        var term = query.Trim();
+        if (term.Length == 0)
+            return [];
+
+        var contains = $"%{EscapeLike(term)}%";
+        var prefix = $"{EscapeLike(term)}%";
+
+        return await _db.Products
+            .AsNoTracking()
+            .Where(p => p.IsActive && (
+                EF.Functions.Like(p.Name, contains, "\\") ||
+                EF.Functions.Like(p.ModelCode, contains, "\\") ||
+                EF.Functions.Like(p.Brand.Name, contains, "\\")))
+            .OrderBy(p => EF.Functions.Like(p.Name, prefix, "\\") ||
+                          EF.Functions.Like(p.ModelCode, prefix, "\\") ||
+                          EF.Functions.Like(p.Brand.Name, prefix, "\\") ? 0 : 1)
+            .ThenBy(p => p.Name)
+            .Take(limit)
+            .Select(p => new ProductSuggestion(
+                p.Name, p.Brand.Name, p.ModelCode, p.Slug, p.Price,
+                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault()))
+            .ToListAsync();
+    }
+
     private static IQueryable<Product> Filter(IQueryable<Product> products, ProductQuery query)
     {
         if (!string.IsNullOrWhiteSpace(query.Brand))

@@ -1,6 +1,6 @@
 .wrap { max-width: 760px; padding-top: 3.4rem; padding-bottom: 2rem; }
 .done { text-align: center; margin-bottom: 2.4rem; animation: rise 0.8s var(--ease) both; }
-.card { animation: rise 0.8s var(--ease) 0.15s both; }
+.card { border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); animation: rise 0.8s var(--ease) 0.15s both; }
 .retry { margin: 1.2rem 0 0.4rem; }
 .check--wait { border-style: dashed; animation: pulse 1.6s ease-in-out infinite; }
 .check--bad { border-color: var(--danger); color: var(--danger); }

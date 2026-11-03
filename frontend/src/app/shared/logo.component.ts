@@ -24,9 +24,9 @@ import { Component, input } from '@angular/core';
     .logo { display: inline-flex; align-items: center; gap: calc(var(--size) * 0.55px); color: var(--ink); line-height: 1; }
     .logo--light { color: var(--ivory); }
     .emblem { width: calc(var(--size) * 2.15px); height: calc(var(--size) * 2.15px); flex: none; transition: width 0.35s var(--ease), height 0.35s var(--ease); }
-    .mono { font-family: var(--font-display); font-size: 40px; font-style: italic; font-weight: 500; fill: currentColor; }
+    .mono { font-family: var(--font-logo); font-size: 40px; font-style: italic; font-weight: 500; fill: currentColor; }
     .words { display: flex; flex-direction: column; align-items: center; }
-    .name { transition: font-size 0.35s var(--ease); font-family: var(--font-display); font-weight: 500; font-size: calc(var(--size) * 1.45px); letter-spacing: 0.3em; margin-right: -0.3em; line-height: 1; }
+    .name { transition: font-size 0.35s var(--ease); font-family: var(--font-logo); font-weight: 500; font-size: calc(var(--size) * 1.45px); letter-spacing: 0.3em; margin-right: -0.3em; line-height: 1; }
     .rule { display: block; width: 100%; height: 1px; margin: calc(var(--size) * 0.28px) 0 calc(var(--size) * 0.3px); background: var(--gold); }
     .sub { transition: font-size 0.35s var(--ease); font-family: var(--font-body); font-weight: 400; font-size: calc(var(--size) * 0.5px); letter-spacing: 0.5em; margin-right: -0.5em; line-height: 1; }
   `

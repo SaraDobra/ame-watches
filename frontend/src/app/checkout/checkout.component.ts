@@ -30,7 +30,7 @@ export class CheckoutComponent {
   form = this.fb.nonNullable.group({
     customerName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
     phone: ['', [Validators.required, Validators.pattern(PHONE)]],
-    email: ['', [Validators.email, Validators.maxLength(150)]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
     city: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     address: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(250)]],
     paymentMethod: ['CashOnDelivery' as 'CashOnDelivery' | 'Card']
@@ -74,7 +74,7 @@ export class CheckoutComponent {
     this.orders.create({
       customerName: value.customerName.trim(),
       phone: value.phone.trim(),
-      email: value.email.trim() || null,
+      email: value.email.trim(),
       city: value.city.trim(),
       address: value.address.trim(),
       paymentMethod: value.paymentMethod,

@@ -2,7 +2,7 @@
 
 .hero { background: radial-gradient(ellipse at 78% 45%, #2e2820 0%, #0c0c0d 62%); color: var(--ivory); overflow: hidden; }
 .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; gap: 3rem; min-height: 680px; padding-top: 3rem; padding-bottom: 3rem; }
-.eyebrow { display: block; font-size: 0.72rem; letter-spacing: 0.38em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1.4rem; }
+.eyebrow { display: block; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1.4rem; }
 .eyebrow--dark { color: var(--gold-dark); margin-bottom: 0.8rem; }
 h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 400; line-height: 1.08; margin: 0 0 1.4rem; max-width: 14ch; }
 .hero-text p { font-size: 1.05rem; line-height: 1.8; color: #cfc8b8; max-width: 44ch; margin: 0 0 2.4rem; }
@@ -41,7 +41,7 @@ h1 { font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 400; line-height: 1.08;
 .brand--qq { background: linear-gradient(135deg, #2b2418, #14110b); border-left: 1px solid rgba(184, 151, 90, 0.35); }
 .brand h2 { font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 400; margin: 0 0 1rem; }
 .brand p { color: #c4bdad; line-height: 1.8; max-width: 38ch; margin: 0 0 1.8rem; }
-.link { font-size: 0.72rem; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 0.3rem; align-self: flex-start; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); transition: color 0.3s var(--ease), letter-spacing 0.4s var(--ease); }
+.link { font-size: 0.76rem; font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 0.3rem; align-self: flex-start; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-light); transition: color 0.3s var(--ease), letter-spacing 0.4s var(--ease); }
 .link:hover { color: #fff; letter-spacing: 0.3em; }
 
 .benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4rem; }

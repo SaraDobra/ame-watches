@@ -36,8 +36,8 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
     </a>
   `,
   styles: `
-    .card { display: block; text-decoration: none; color: inherit; background: var(--paper); border: 1px solid var(--line); transition: box-shadow 0.5s var(--ease), transform 0.5s var(--ease), border-color 0.5s var(--ease); height: 100%; display: flex; flex-direction: column; }
-    .card:hover { box-shadow: 0 26px 50px -24px rgba(12, 12, 13, 0.4); transform: translateY(-5px); border-color: #d9cfb8; }
+    .card { display: block; text-decoration: none; color: inherit; background: var(--paper); border: 1px solid var(--line); transition: box-shadow 0.5s var(--ease), transform 0.5s var(--ease), border-color 0.5s var(--ease); height: 100%; border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: column; }
+    .card:hover { box-shadow: var(--shadow-lift); transform: translateY(-5px); border-color: #d9cfb8; }
     .media { position: relative; background: radial-gradient(circle at 50% 40%, #fbf9f4, #efe9dc); padding: 1.6rem 3.2rem 1rem; }
     .media--photo { background: #fff; padding: 1rem; overflow: hidden; }
     .media img.main { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: contain; transition: transform 0.9s var(--ease), opacity 0.5s var(--ease); }
@@ -49,9 +49,9 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
     }
     .view { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dark); margin-top: 0.5rem; opacity: 0; transform: translateY(6px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); }
     @media (hover: none) { .view { opacity: 1; transform: none; } }
-    .tag { position: absolute; top: 0.9rem; left: 0.9rem; background: var(--ink); color: #fff; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.3rem 0.6rem; }
+    .tag { position: absolute; top: 0.9rem; left: 0.9rem; background: var(--ink); color: #fff; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.32rem 0.75rem; border-radius: var(--radius-pill); }
     .info { padding: 1.2rem 1.4rem 1.6rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
-    .brand { font-size: 0.66rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-dark); }
+    .brand { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dark); }
     h3 { font-size: 1.55rem; margin: 0.1rem 0 0; }
     .code { font-size: 0.74rem; color: var(--muted); letter-spacing: 0.08em; }
     .price { font-family: var(--font-display); font-variant-numeric: lining-nums; font-size: 1.35rem; font-weight: 500; margin-top: 0.7rem; }

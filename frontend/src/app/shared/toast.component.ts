@@ -21,7 +21,7 @@ import { ToastService } from '../services/toast.service';
   `,
   styles: `
     .stack { position: fixed; right: 1.2rem; bottom: 1.2rem; z-index: 60; display: grid; gap: 0.6rem; max-width: min(420px, calc(100vw - 2.4rem)); }
-    .toast { display: flex; align-items: center; gap: 0.8rem; background: var(--ink); color: #fff; padding: 0.9rem 1rem; border-left: 3px solid var(--gold); box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.6); animation: slide 0.45s var(--ease) both; font-size: 0.9rem; }
+    .toast { display: flex; align-items: center; gap: 0.8rem; background: var(--ink); color: #fff; padding: 0.95rem 1.1rem; border-radius: var(--radius-md); border-left: 3px solid var(--gold); box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.6); animation: slide 0.45s var(--ease) both; font-size: 0.9rem; }
     .mark { color: var(--gold-light); }
     .text { flex: 1; }
     a { color: var(--gold-light); text-decoration: underline; white-space: nowrap; font-size: 0.84rem; }

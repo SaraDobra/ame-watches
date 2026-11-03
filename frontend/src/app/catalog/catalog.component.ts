@@ -4,8 +4,10 @@ import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { CatalogService } from '../services/catalog.service';
-import { Brand, PagedResult, ProductFilter, ProductListItem } from '../models/catalog.models';
+import { Brand, PagedResult, PriceRange, ProductFilter, ProductListItem } from '../models/catalog.models';
 import { ProductCardComponent } from '../shared/product-card.component';
+import { SearchBoxComponent } from '../shared/search-box.component';
+import { PriceRangeComponent } from '../shared/price-range.component';
 
 const SORTS = [
   { value: 'Newest', label: 'Më të rejat' },
@@ -22,7 +24,7 @@ const GENDERS = [
 
 @Component({
   selector: 'app-catalog',
-  imports: [RouterLink, ProductCardComponent],
+  imports: [RouterLink, ProductCardComponent, SearchBoxComponent, PriceRangeComponent],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss'
 })
@@ -38,6 +40,7 @@ export class CatalogComponent implements OnInit {
   readonly genders = GENDERS;
 
   brands = signal<Brand[]>([]);
+  bounds = signal<PriceRange | null>(null);
   result = signal<PagedResult<ProductListItem> | null>(null);
   filter = signal<ProductFilter>({});
   loading = signal(true);
@@ -50,6 +53,9 @@ export class CatalogComponent implements OnInit {
 
     this.catalog.getBrands().pipe(catchError(() => of([] as Brand[])), takeUntilDestroyed(this.destroyRef))
       .subscribe(brands => this.brands.set(brands));
+
+    this.catalog.getPriceRange().pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
+      .subscribe(range => this.bounds.set(range));
 
     this.route.queryParamMap.pipe(
       tap(params => {
@@ -75,14 +81,8 @@ export class CatalogComponent implements OnInit {
     this.router.navigate([], { queryParams, queryParamsHandling: 'merge' });
   }
 
-  setPrice(key: 'minPrice' | 'maxPrice', event: Event): void {
-    const raw = (event.target as HTMLInputElement).value.trim();
-    const value = raw === '' ? null : Number(raw);
-    this.setFilter({ [key]: value === null || Number.isNaN(value) || value < 0 ? null : value });
-  }
-
-  setSearch(event: Event): void {
-    this.setFilter({ search: (event.target as HTMLInputElement).value.trim() });
+  setPrice(range: { from: number | null; to: number | null }): void {
+    this.setFilter({ minPrice: range.from, maxPrice: range.to });
   }
 
   goToPage(page: number): void {

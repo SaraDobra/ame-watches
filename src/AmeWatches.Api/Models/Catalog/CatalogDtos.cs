@@ -76,3 +76,7 @@ public record PagedResult<T>(IReadOnlyList<T> Items, int Page, int PageSize, int
 {
     public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 }
+
+public record PriceRange(decimal Min, decimal Max);
+
+public record ProductSuggestion(string Name, string Brand, string ModelCode, string Slug, decimal Price, string? ImageUrl);
