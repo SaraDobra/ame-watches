@@ -148,4 +148,49 @@ public class AdminProductServiceTests
         Assert.Null(created.Movement);
         Assert.Null(created.CaseSizeMm);
     }
+
+    [Fact]
+    public async Task Delete_RemovesAProductWithoutOrders_AndItsPhotos()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+        var brand = await db.Context.Brands.FirstAsync();
+        var created = await service.Create(Input(brand.Id, code: "DEL-001"));
+        var id = created.Value!.Id;
+        db.Context.ProductImages.Add(new ProductImage { ProductId = id, Url = "/products/x.webp", SortOrder = 0 });
+        await db.Context.SaveChangesAsync();
+
+        var result = await service.Delete(id);
+
+        Assert.True(result.Succeeded);
+        Assert.False(await db.Context.Products.AnyAsync(p => p.Id == id));
+        Assert.False(await db.Context.ProductImages.AnyAsync(i => i.ProductId == id));
+    }
+
+    [Fact]
+    public async Task Delete_RefusesAProductThatHasBeenOrdered()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+        var product = await db.Context.Products.OrderBy(p => p.Id).FirstAsync();
+        db.Context.Orders.Add(new Order
+        {
+            OrderNo = "AW-DELTST", AccessToken = "t", CustomerName = "A", Phone = "1", Address = "x", City = "y",
+            Items = { new OrderItem { ProductId = product.Id, ProductName = product.Name, ModelCode = product.ModelCode, UnitPrice = product.Price, Quantity = 1 } }
+        });
+        await db.Context.SaveChangesAsync();
+
+        var result = await service.Delete(product.Id);
+
+        Assert.Equal(AdminError.Conflict, result.Error);
+        Assert.True(await db.Context.Products.AnyAsync(p => p.Id == product.Id));
+    }
+
+    [Fact]
+    public async Task Delete_OfAnUnknownProduct_IsNotFound()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+        Assert.Equal(AdminError.NotFound, (await service.Delete(999_999)).Error);
+    }
 }

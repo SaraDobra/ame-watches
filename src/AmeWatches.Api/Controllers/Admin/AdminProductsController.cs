@@ -52,6 +52,13 @@ public class AdminProductsController : ControllerBase
         return result.Succeeded ? Ok(result.Value) : ToError(result.Error, result.Message);
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var result = await _products.Delete(id);
+        return result.Succeeded ? NoContent() : ToError(result.Error, result.Message);
+    }
+
     [HttpPost("{id:int}/images")]
     [RequestSizeLimit(45 * 1024 * 1024)]
     public async Task<IActionResult> UploadImages(int id, [FromForm] List<IFormFile> files, CancellationToken cancellationToken)

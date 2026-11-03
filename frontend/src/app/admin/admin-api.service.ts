@@ -56,6 +56,10 @@ export class AdminApiService {
     return this.http.patch<AdminProductDetail>(`${this.url}/products/${id}/active`, { isActive });
   }
 
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/products/${id}`);
+  }
+
   uploadImages(id: number, files: File[]): Observable<AdminProductDetail> {
     const form = new FormData();
     files.forEach(file => form.append('files', file, file.name));

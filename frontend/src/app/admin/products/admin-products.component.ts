@@ -30,6 +30,10 @@ import { ImgPipe } from '../../pipes/img.pipe';
         }
       </div>
 
+      @if (deleteError()) {
+        <p class="adm-errors" role="alert">{{ deleteError() }}</p>
+      }
+
       @if (failed()) {
         <p class="adm-errors" role="alert">Nuk u ngarkuan produktet. A është ndezur API-ja?</p>
       } @else if (loading()) {
@@ -57,7 +61,16 @@ import { ImgPipe } from '../../pipes/img.pipe';
                     </button>
                     <small class="state">{{ p.isActive ? 'Aktive' : 'E fshehur' }}</small>
                   </td>
-                  <td class="num"><a [routerLink]="['/admin/produktet', p.id]" class="adm-btn adm-btn--ghost adm-btn--small">Ndrysho</a></td>
+                  <td class="num actions">
+                    <a [routerLink]="['/admin/produktet', p.id]" class="adm-btn adm-btn--ghost adm-btn--small">Ndrysho</a>
+                    @if (confirming() === p.id) {
+                      <span class="ask">Fshi?</span>
+                      <button type="button" class="adm-btn adm-btn--small" [disabled]="busy() === p.id" (click)="remove(p)">Po</button>
+                      <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" (click)="confirming.set(null)">Jo</button>
+                    } @else {
+                      <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" (click)="confirming.set(p.id)">Fshi</button>
+                    }
+                  </td>
                 </tr>
               }
             </tbody>
@@ -81,6 +94,9 @@ import { ImgPipe } from '../../pipes/img.pipe';
     .thumb img { width: 48px; height: 48px; object-fit: contain; background: #fff; border: 1px solid var(--line); }
     .none { color: var(--muted); }
     .code { color: var(--muted); }
+    .actions { white-space: nowrap; }
+    .actions .adm-btn { margin-left: 0.35rem; }
+    .ask { margin-left: 0.5rem; color: var(--muted); font-size: 0.85rem; }
     .state { margin-left: 0.5rem; color: var(--muted); }
     .switch { width: 42px; height: 24px; border-radius: 999px; border: none; background: #cfc8b8; position: relative; cursor: pointer; vertical-align: middle; transition: background 0.3s var(--ease); }
     .switch span { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.3s var(--ease); }
@@ -109,6 +125,8 @@ export class AdminProductsComponent {
   loading = signal(true);
   failed = signal(false);
   busy = signal<number | null>(null);
+  confirming = signal<number | null>(null);
+  deleteError = signal('');
 
   constructor() {
     afterNextRender(() => {
@@ -147,6 +165,23 @@ export class AdminProductsComponent {
 
   pages(): number[] {
     return Array.from({ length: this.result()?.totalPages ?? 0 }, (_, i) => i + 1);
+  }
+
+  remove(product: AdminProductListItem): void {
+    this.busy.set(product.id);
+    this.deleteError.set('');
+    this.api.deleteProduct(product.id).subscribe({
+      next: () => {
+        this.result.update(r => r && { ...r, items: r.items.filter(x => x.id !== product.id), totalCount: r.totalCount - 1 });
+        this.confirming.set(null);
+        this.busy.set(null);
+      },
+      error: (err: { error?: { message?: string } }) => {
+        this.deleteError.set(err?.error?.message ?? 'Ora nuk u fshi. Provo përsëri.');
+        this.confirming.set(null);
+        this.busy.set(null);
+      }
+    });
   }
 
   toggle(product: AdminProductListItem): void {

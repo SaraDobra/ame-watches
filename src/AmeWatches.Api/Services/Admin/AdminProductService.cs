@@ -2,6 +2,7 @@ using AmeWatches.Api.Common;
 using AmeWatches.Api.Data;
 using AmeWatches.Api.Data.Entities;
 using AmeWatches.Api.Models.Admin;
+using AmeWatches.Api.Services.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmeWatches.Api.Services.Admin;
@@ -13,12 +14,19 @@ public interface IAdminProductService
     Task<AdminResult<AdminProductDetail>> Create(ProductInput input);
     Task<AdminResult<AdminProductDetail>> Update(int id, ProductInput input);
     Task<AdminResult<AdminProductDetail>> SetActive(int id, bool isActive);
+    Task<AdminResult<int>> Delete(int id);
 }
 
 public class AdminProductService : IAdminProductService
 {
     private readonly AppDbContext _db;
-    public AdminProductService(AppDbContext db) => _db = db;
+    private readonly IImageStorage? _storage;
+
+    public AdminProductService(AppDbContext db, IImageStorage? storage = null)
+    {
+        _db = db;
+        _storage = storage;
+    }
 
     public async Task<PagedAdmin<AdminProductListItem>> List(AdminProductQuery query)
     {
@@ -111,6 +119,27 @@ public class AdminProductService : IAdminProductService
         product.IsActive = isActive;
         await _db.SaveChangesAsync();
         return AdminResult<AdminProductDetail>.Ok((await Get(id))!);
+    }
+
+    public async Task<AdminResult<int>> Delete(int id)
+    {
+        var product = await _db.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == id);
+        if (product is null)
+            return AdminResult<int>.NotFound("Produkti nuk u gjet.");
+
+        if (await _db.OrderItems.AnyAsync(i => i.ProductId == id))
+            return AdminResult<int>.Conflict("Kjo orë ka porosi, prandaj nuk mund të fshihet. Fshihe nga dyqani me çelësin \"Në dyqan\".");
+
+        var urls = product.Images.Select(i => i.Url).ToList();
+        _db.Products.Remove(product);
+        await _db.SaveChangesAsync();
+
+        // Skedarët fshihen vetëm pasi databaza ka ruajtur me sukses.
+        if (_storage is not null)
+            foreach (var url in urls)
+                await _storage.Delete(url);
+
+        return AdminResult<int>.Ok(id);
     }
 
     private static void Apply(Product product, ProductInput input, string code)
