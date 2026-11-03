@@ -1,6 +1,7 @@
 using AmeWatches.Api.Data;
 using AmeWatches.Api.Data.Entities;
 using AmeWatches.Api.Models.Payments;
+using AmeWatches.Api.Services.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -14,10 +15,12 @@ public class PaymentService : IPaymentService
     private readonly IPaymentProvider _provider;
     private readonly PaymentOptions _options;
     private readonly TimeProvider _time;
+    private readonly IOrderNotifier _notifier;
     private readonly ILogger<PaymentService> _logger;
 
-    public PaymentService(AppDbContext db, IPaymentProvider provider, IOptions<PaymentOptions> options, TimeProvider time, ILogger<PaymentService> logger)
+    public PaymentService(AppDbContext db, IPaymentProvider provider, IOptions<PaymentOptions> options, TimeProvider time, IOrderNotifier notifier, ILogger<PaymentService> logger)
     {
+        _notifier = notifier;
         _db = db;
         _provider = provider;
         _options = options.Value;
@@ -118,6 +121,7 @@ public class PaymentService : IPaymentService
             order.PaidAt = now.UtcDateTime;
             order.Status = OrderStatus.Confirmed;
             await _db.SaveChangesAsync();
+            _notifier.OrderConfirmed(order);
             return WebhookResult.Accepted;
         }
 
@@ -150,6 +154,7 @@ public class PaymentService : IPaymentService
         order.PaidAt = now.UtcDateTime;
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();
+        _notifier.OrderConfirmed(order);
         return WebhookResult.Accepted;
     }
 

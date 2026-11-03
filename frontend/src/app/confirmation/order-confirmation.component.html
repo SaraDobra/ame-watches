@@ -14,6 +14,7 @@
           <span class="check" aria-hidden="true">✓</span>
           <h1>Faleminderit, {{ order()!.customerName }}</h1>
           <p class="lead">Pagesa juaj u pranua dhe porosia u konfirmua. Do t'ju kontaktojmë në <strong>{{ order()!.phone }}</strong> për dërgesën.</p>
+          @if (order()!.email) { <p class="mail">Një konfirmim po dërgohet te <strong>{{ order()!.email }}</strong>.</p> }
         }
         @case ('pending') {
           <span class="check check--wait" aria-hidden="true">…</span>
@@ -39,6 +40,7 @@
           <span class="check" aria-hidden="true">✓</span>
           <h1>Faleminderit, {{ order()!.customerName }}</h1>
           <p class="lead">Porosia juaj u regjistrua. Do t'ju kontaktojmë në <strong>{{ order()!.phone }}</strong> për ta konfirmuar dërgesën.</p>
+          @if (order()!.email) { <p class="mail">Një konfirmim po dërgohet te <strong>{{ order()!.email }}</strong>.</p> }
         }
       }
       <p class="no">Numri i porosisë <strong>{{ order()!.orderNo }}</strong></p>

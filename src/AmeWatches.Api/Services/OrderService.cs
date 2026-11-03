@@ -3,6 +3,7 @@ using System.Text;
 using AmeWatches.Api.Data;
 using AmeWatches.Api.Data.Entities;
 using AmeWatches.Api.Models.Orders;
+using AmeWatches.Api.Services.Email;
 using AmeWatches.Api.Services.Payments;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,12 +18,14 @@ public class OrderService : IOrderService
 
     private readonly AppDbContext _db;
     private readonly IPaymentService _payments;
+    private readonly IOrderNotifier _notifier;
     private readonly ILogger<OrderService> _logger;
 
-    public OrderService(AppDbContext db, IPaymentService payments, ILogger<OrderService> logger)
+    public OrderService(AppDbContext db, IPaymentService payments, IOrderNotifier notifier, ILogger<OrderService> logger)
     {
         _db = db;
         _payments = payments;
+        _notifier = notifier;
         _logger = logger;
     }
 
@@ -112,6 +115,9 @@ public class OrderService : IOrderService
                 return CreateOrderResult.Fail(OrderFailure.PaymentUnavailable, "Pagesa me kartë nuk mund të nisë tani. Provoni përsëri ose zgjidhni pagesën në dorëzim.");
             }
         }
+
+        if (order.PaymentMethod == PaymentMethod.CashOnDelivery)
+            _notifier.OrderConfirmed(order);
 
         return CreateOrderResult.Ok(new OrderCreatedResponse(order.OrderNo, order.AccessToken, order.Total, paymentUrl));
     }

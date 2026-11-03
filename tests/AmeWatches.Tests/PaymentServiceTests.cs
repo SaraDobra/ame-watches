@@ -21,7 +21,7 @@ public class PaymentServiceTests
     }
 
     private static CreateOrderRequest CardRequest(int productId, int quantity = 1)
-        => new("Arben Krasniqi", "+383 44 123 456", null, "Rruga e Dëshmorëve 12", "Prishtinë",
+        => new("Arben Krasniqi", "+383 44 123 456", "arben@mail.com", "Rruga e Dëshmorëve 12", "Prishtinë",
                PaymentMethod.Card, [new OrderItemRequest(productId, quantity)]);
 
     private static async Task<(Order order, string sessionId)> PlaceCardOrder(TestDb db, PaymentTestKit kit, int quantity = 1)

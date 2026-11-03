@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using AmeWatches.Api.Models.Auth;
+using AmeWatches.Api.Models.Email;
+using AmeWatches.Api.Services.Email;
 using AmeWatches.Api.Models.Payments;
 using AmeWatches.Api.Models.Storage;
 using AmeWatches.Api.Services.Storage;
@@ -24,6 +26,28 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+var emailOptions = builder.Configuration.GetSection(EmailOptions.SectionName).Get<EmailOptions>() ?? new EmailOptions();
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.SectionName));
+if (emailOptions.Mode.Equals("Smtp", StringComparison.OrdinalIgnoreCase))
+{
+    if (string.IsNullOrWhiteSpace(emailOptions.Host))
+        throw new InvalidOperationException("Email:Mode=Smtp kërkon Email:Host.");
+    builder.Services.AddSingleton<IEmailSender, SmtpEmailSender>();
+}
+else if (builder.Environment.IsProduction())
+{
+    throw new InvalidOperationException("Në prodhim Email:Mode duhet të jetë Smtp.");
+}
+else
+{
+    builder.Services.AddSingleton<IEmailSender, FileEmailSender>();
+}
+builder.Services.AddSingleton<EmailOutbox>();
+builder.Services.AddSingleton<IEmailOutbox>(sp => sp.GetRequiredService<EmailOutbox>());
+builder.Services.AddSingleton<OrderEmailBuilder>();
+builder.Services.AddSingleton<IOrderNotifier, OrderNotifier>();
+builder.Services.AddHostedService<EmailDispatchService>();
 
 builder.Services.Configure<PaymentOptions>(builder.Configuration.GetSection(PaymentOptions.SectionName));
 var paymentOptions = builder.Configuration.GetSection(PaymentOptions.SectionName).Get<PaymentOptions>() ?? new PaymentOptions();

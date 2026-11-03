@@ -20,7 +20,7 @@ public class AdminOrderServiceTests
     }
 
     private static CreateOrderRequest Request(int productId, PaymentMethod method, int quantity = 1)
-        => new("Arben Krasniqi", "+383 44 123 456", null, "Rruga e Dëshmorëve 12", "Prishtinë", method, [new OrderItemRequest(productId, quantity)]);
+        => new("Arben Krasniqi", "+383 44 123 456", "arben@mail.com", "Rruga e Dëshmorëve 12", "Prishtinë", method, [new OrderItemRequest(productId, quantity)]);
 
     private static async Task<string> Place(Kit kit, PaymentMethod method = PaymentMethod.CashOnDelivery, int quantity = 1, int productIndex = 0)
     {
