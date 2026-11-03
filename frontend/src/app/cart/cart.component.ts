@@ -5,10 +5,11 @@ import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { CartService } from '../services/cart.service';
 import { WatchArtComponent } from '../shared/watch-art.component';
+import { ImgPipe } from '../pipes/img.pipe';
 
 @Component({
   selector: 'app-cart',
-  imports: [DecimalPipe, RouterLink, WatchArtComponent],
+  imports: [DecimalPipe, RouterLink, WatchArtComponent, ImgPipe],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss'
 })

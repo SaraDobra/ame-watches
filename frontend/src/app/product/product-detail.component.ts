@@ -12,6 +12,7 @@ import { SSR_RESPONSE } from '../util/ssr-response';
 import { CartService } from '../services/cart.service';
 import { ToastService } from '../services/toast.service';
 import { FadeImageDirective } from '../directives/fade-image.directive';
+import { ImgPipe } from '../pipes/img.pipe';
 
 interface Spec {
   label: string;
@@ -20,7 +21,7 @@ interface Spec {
 
 @Component({
   selector: 'app-product-detail',
-  imports: [DecimalPipe, RouterLink, WatchArtComponent, FadeImageDirective],
+  imports: [DecimalPipe, RouterLink, WatchArtComponent, FadeImageDirective, ImgPipe],
   templateUrl: './product-detail.component.html',
   styleUrl: './product-detail.component.scss'
 })

@@ -47,7 +47,7 @@
         <div class="stage" (mousemove)="zoom($event)">
           @if (product()!.images.length) {
             @for (image of [product()!.images[selected()]]; track image) {
-              <img class="photo" [src]="image" [style.transform-origin]="origin()" width="900" height="900" fetchpriority="high"
+              <img class="photo" [src]="image | appImg" [style.transform-origin]="origin()" width="900" height="900" fetchpriority="high"
                    [alt]="product()!.brand + ' ' + product()!.name + ' — foto ' + (selected() + 1)">
             }
           } @else {
@@ -59,7 +59,7 @@
             @for (image of product()!.images; track image; let i = $index) {
               <button type="button" role="tab" [class.on]="i === selected()" [attr.aria-selected]="i === selected()"
                       [attr.aria-label]="'Foto ' + (i + 1)" (click)="selected.set(i)">
-                <img appFade [src]="image" alt="" width="84" height="84" loading="lazy">
+                <img appFade [src]="image | appImg" alt="" width="84" height="84" loading="lazy">
               </button>
             }
           </div>

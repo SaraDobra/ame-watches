@@ -1,6 +1,10 @@
-<app-header />
-<main>
+@if (isAdmin()) {
   <router-outlet />
-</main>
-<app-footer />
+} @else {
+  <app-header />
+  <main>
+    <router-outlet />
+  </main>
+  <app-footer />
+}
 <app-toasts />

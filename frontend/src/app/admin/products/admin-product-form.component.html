@@ -1,0 +1,145 @@
+<div class="adm-page">
+  <a routerLink="/admin/produktet" class="back">← Të gjitha produktet</a>
+
+  @if (loading()) {
+    <div class="sk"></div>
+  } @else if (id !== null && !product()) {
+    <p class="adm-empty">Produkti nuk u gjet.</p>
+  } @else {
+    <div class="adm-head">
+      <div>
+        <h1>{{ id === null ? 'Produkt i ri' : product()!.name }}</h1>
+        <p class="adm-sub">
+          @if (id === null) { Plotësoni të dhënat. Fotot shtohen në hapin tjetër. }
+          @else { Adresa në dyqan: <a [href]="'/ora/' + product()!.slug" target="_blank" rel="noopener">/ora/{{ product()!.slug }}</a> }
+        </p>
+      </div>
+    </div>
+
+    @if (createdNotice()) {
+      <p class="adm-ok" role="status">Produkti u krijua. Tani shtoni fotot më poshtë.</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()" novalidate class="adm-card form">
+      <div class="grid2">
+        <div class="adm-field" [class.adm-field--bad]="bad('name')">
+          <label for="name">Emri</label>
+          <input id="name" formControlName="name" placeholder="p.sh. Classic Gold">
+          @if (bad('name')) { <small class="err">Shkruani emrin (2 deri 200 shkronja).</small> }
+        </div>
+        <div class="adm-field" [class.adm-field--bad]="bad('modelCode')">
+          <label for="modelCode">Kodi i modelit</label>
+          <input id="modelCode" formControlName="modelCode" placeholder="p.sh. C09A-012PY">
+          @if (bad('modelCode')) { <small class="err">Shkruani kodin e modelit.</small> }
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="adm-field" [class.adm-field--bad]="bad('brandId')">
+          <label for="brandId">Brendi</label>
+          <select id="brandId" formControlName="brandId">
+            @for (b of brands(); track b.id) { <option [ngValue]="b.id">{{ b.name }}</option> }
+          </select>
+        </div>
+        <div class="adm-field" [class.adm-field--bad]="bad('price')">
+          <label for="price">Çmimi (€)</label>
+          <input id="price" type="number" step="0.01" formControlName="price">
+          @if (bad('price')) { <small class="err">Çmimi duhet të jetë mbi 0.</small> }
+        </div>
+        <div class="adm-field" [class.adm-field--bad]="bad('stock')">
+          <label for="stock">Stoku (copë)</label>
+          <input id="stock" type="number" step="1" formControlName="stock">
+          @if (bad('stock')) { <small class="err">Stoku nuk mund të jetë negativ.</small> }
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="adm-field">
+          <label for="gender">Për</label>
+          <select id="gender" formControlName="gender">
+            <option value="Women">Gra</option><option value="Men">Burra</option><option value="Unisex">Unisex</option>
+          </select>
+        </div>
+        <div class="adm-field">
+          <label for="type">Lloji</label>
+          <select id="type" formControlName="type">
+            <option value="Analog">Analoge</option><option value="Digital">Dixhitale</option><option value="AnalogDigital">Analoge dhe dixhitale</option>
+          </select>
+        </div>
+        <div class="adm-field">
+          <label for="movement">Mekanizmi <small>(opsionale)</small></label>
+          <input id="movement" formControlName="movement" list="movements" placeholder="Kuarc, Automatik, Solar">
+          <datalist id="movements"><option value="Kuarc"><option value="Automatik"><option value="Solar"></datalist>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="adm-field" [class.adm-field--bad]="bad('caseSizeMm')">
+          <label for="caseSizeMm">Diametri i kasës (mm) <small>(opsionale, vetëm nëse e dini)</small></label>
+          <input id="caseSizeMm" type="number" formControlName="caseSizeMm">
+          @if (bad('caseSizeMm')) { <small class="err">Midis 10 dhe 100 mm.</small> }
+        </div>
+        <div class="adm-field" [class.adm-field--bad]="bad('waterResistanceM')">
+          <label for="waterResistanceM">Rezistenca ndaj ujit (m) <small>(opsionale)</small></label>
+          <input id="waterResistanceM" type="number" formControlName="waterResistanceM">
+          @if (bad('waterResistanceM')) { <small class="err">Midis 0 dhe 1000 m.</small> }
+        </div>
+      </div>
+
+      <div class="adm-field">
+        <label for="description">Përshkrimi <small>(opsionale)</small></label>
+        <textarea id="description" formControlName="description" placeholder="Shkruani vetëm çfarë dihet me siguri."></textarea>
+      </div>
+
+      <label class="check"><input type="checkbox" formControlName="isActive"> Shfaqe në dyqan</label>
+
+      @if (errors().length) {
+        <ul class="adm-errors" role="alert">@for (e of errors(); track e) { <li>{{ e }}</li> }</ul>
+      }
+      @if (saved()) { <p class="adm-ok" role="status">{{ saved() }}</p> }
+
+      <button type="submit" class="adm-btn" [disabled]="saving()">{{ saving() ? 'Duke ruajtur...' : (id === null ? 'Krijo produktin' : 'Ruaj ndryshimet') }}</button>
+    </form>
+
+    @if (id !== null && product()) {
+      <section class="adm-card photos">
+        <h2>Fotot <small>({{ product()!.images.length }} nga {{ maxImages }})</small></h2>
+        <p class="adm-sub">Foto e parë është ajo kryesore: shfaqet te kartela në dyqan. JPG, PNG ose WebP, deri në 5 MB.</p>
+
+        @if (imageError()) { <p class="adm-errors" role="alert">{{ imageError() }}</p> }
+
+        <label class="drop" [class.drag]="dragging()" (dragover)="$event.preventDefault(); dragging.set(true)"
+               (dragleave)="dragging.set(false)" (drop)="onDrop($event)">
+          <input type="file" multiple accept="image/jpeg,image/png,image/webp" (change)="onPick($event)" [disabled]="uploading()">
+          <strong>{{ uploading() ? 'Duke ngarkuar...' : 'Zgjidhni foto ose tërhiqini këtu' }}</strong>
+        </label>
+
+        @if (product()!.images.length === 0) {
+          <p class="adm-sub none">Kjo orë nuk ka ende foto. Në dyqan shfaqet një ilustrim i përkohshëm.</p>
+        } @else {
+          <ul class="gallery">
+            @for (image of product()!.images; track image.id; let i = $index) {
+              <li>
+                <div class="frame">
+                  <img [src]="image.url | appImg" [alt]="'Foto ' + (i + 1)" loading="lazy">
+                  @if (i === 0) { <span class="main">Kryesore</span> }
+                </div>
+                <div class="btns">
+                  <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" [disabled]="i === 0" (click)="move(i, -1)" aria-label="Lëvize majtas">←</button>
+                  <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" [disabled]="i === product()!.images.length - 1" (click)="move(i, 1)" aria-label="Lëvize djathtas">→</button>
+                  @if (i > 0) { <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" (click)="makePrimary(i)">Kryesore</button> }
+                  @if (deleting() === image.id) {
+                    <button type="button" class="adm-btn adm-btn--danger adm-btn--small" (click)="remove(image.id)">Po, fshije</button>
+                    <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" (click)="deleting.set(null)">Jo</button>
+                  } @else {
+                    <button type="button" class="adm-btn adm-btn--ghost adm-btn--small" (click)="deleting.set(image.id)">Fshi</button>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    }
+  }
+</div>

@@ -27,7 +27,7 @@
           <li class="line">
             <a [routerLink]="['/ora', item.slug]" class="thumb">
               @if (item.imageUrl) {
-                <img [src]="item.imageUrl" [alt]="item.brand + ' ' + item.name">
+                <img [src]="item.imageUrl | appImg" [alt]="item.brand + ' ' + item.name">
               } @else {
                 <app-watch-art tone="black" [label]="item.name" />
               }

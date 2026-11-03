@@ -14,6 +14,7 @@ export const routes: Routes = [
   { path: 'shporta', component: CartComponent },
   { path: 'porosia', component: CheckoutComponent },
   { path: 'porosia/konfirmim/:orderNo', component: OrderConfirmationComponent },
+  { path: 'admin', loadChildren: () => import('./admin/admin.routes').then(m => m.ADMIN_ROUTES) },
   { path: 'pagesa/simulator/:sessionId', component: PaymentSimulatorComponent },
   { path: '**', redirectTo: '' }
 ];

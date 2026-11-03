@@ -4,19 +4,20 @@ import { RouterLink } from '@angular/router';
 import { ProductListItem } from '../models/catalog.models';
 import { WatchArtComponent } from './watch-art.component';
 import { FadeImageDirective } from '../directives/fade-image.directive';
+import { ImgPipe } from '../pipes/img.pipe';
 
 const TONES = ['black', 'navy', 'ivory', 'green'] as const;
 
 @Component({
   selector: 'app-product-card',
-  imports: [DecimalPipe, RouterLink, WatchArtComponent, FadeImageDirective],
+  imports: [DecimalPipe, RouterLink, WatchArtComponent, FadeImageDirective, ImgPipe],
   template: `
     <a class="card" [routerLink]="['/ora', product().slug]" [attr.aria-label]="product().brand + ' ' + product().name">
       <div class="media" [class.media--photo]="!!product().imageUrl">
         @if (product().imageUrl) {
-          <img appFade class="main" [src]="product().imageUrl" [alt]="product().brand + ' ' + product().name" width="480" height="600" loading="lazy" decoding="async">
+          <img appFade class="main" [src]="product().imageUrl | appImg" [alt]="product().brand + ' ' + product().name" width="480" height="600" loading="lazy" decoding="async">
           @if (product().secondImageUrl) {
-            <img appFade class="alt" [src]="product().secondImageUrl" alt="" width="480" height="600" loading="lazy" decoding="async" aria-hidden="true">
+            <img appFade class="alt" [src]="product().secondImageUrl | appImg" alt="" width="480" height="600" loading="lazy" decoding="async" aria-hidden="true">
           }
         } @else {
           <app-watch-art [tone]="tone()" [label]="product().brand + ' ' + product().name" />
