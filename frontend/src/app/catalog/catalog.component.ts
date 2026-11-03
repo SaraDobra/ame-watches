@@ -87,8 +87,8 @@ export class CatalogComponent implements OnInit {
 
   goToPage(page: number): void {
     this.router.navigate([], { queryParams: { page: page > 1 ? page : null }, queryParamsHandling: 'merge' });
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof document !== 'undefined') {
+      document.querySelector('.results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 

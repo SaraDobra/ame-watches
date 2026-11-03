@@ -5,7 +5,7 @@
 .crumbs a { text-decoration: none; }
 .crumbs a:hover { text-decoration: underline; }
 
-.layout { display: grid; grid-template-columns: 250px 1fr; gap: 3rem; padding-top: 3rem; padding-bottom: 2rem; align-items: start; }
+.layout { display: grid; grid-template-columns: 310px 1fr; gap: 2.6rem; padding-top: 3rem; padding-bottom: 2rem; align-items: start; }
 .toggle { display: none; }
 
 .filters { position: sticky; top: 110px; }
@@ -21,6 +21,7 @@
 .range { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center; color: var(--muted); }
 .clear { background: none; border: none; color: var(--gold-dark); text-decoration: underline; cursor: pointer; font: inherit; font-size: 0.88rem; padding: 0; }
 
+.results { scroll-margin-top: 120px; }
 .bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.6rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
 .count { font-size: 0.9rem; color: var(--muted); }
 .sort { display: flex; align-items: center; gap: 0.7rem; font-size: 0.82rem; color: var(--muted); }
@@ -29,6 +30,8 @@
 .sort select:focus { outline: none; border-color: var(--gold); box-shadow: var(--ring); }
 
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+.grid { transition: opacity 0.25s var(--ease); }
+.grid.dim { opacity: 0.45; pointer-events: none; }
 .grid app-product-card { animation: rise 0.7s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms); }
 .head h1, .head p, .crumbs { animation: rise 0.8s var(--ease) both; }
 .head h1 { animation-delay: 80ms; }
