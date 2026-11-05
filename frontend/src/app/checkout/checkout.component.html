@@ -88,6 +88,7 @@
         <button type="submit" class="btn btn--gold submit" [disabled]="submitting()">
           {{ submitting() ? 'Duke dërguar...' : (form.controls.paymentMethod.value === 'Card' ? 'Vazhdo te pagesa' : 'Konfirmo porosinë') }}
         </button>
+        <p class="legal">Duke konfirmuar pranoni <a routerLink="/kushtet">Kushtet</a> dhe <a routerLink="/privatesia">Politikën e privatësisë</a>.</p>
         <p class="legal">Çmimi përfundimtar llogaritet nga ne në momentin e porosisë. <a routerLink="/shporta">Ndrysho shportën</a></p>
       </aside>
     </form>

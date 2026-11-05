@@ -50,7 +50,7 @@ app.get('/sitemap.xml', async (req, res) => {
     const response = await fetch(`${apiBase}/products?pageSize=48`);
     if (!response.ok) throw new Error(String(response.status));
     const { items } = (await response.json()) as { items: { slug: string }[] };
-    const urls = ['/', '/ora', ...items.map((p) => `/ora/${encodeURIComponent(p.slug)}`)];
+    const urls = ['/', '/ora', '/privatesia', '/kushtet', '/dergesa-pagesa', '/garancia-kthimi', ...items.map((p) => `/ora/${encodeURIComponent(p.slug)}`)];
     res.type('application/xml').send(
       '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
       urls.map((u) => `<url><loc>${origin}${u}</loc></url>`).join('') + '</urlset>');
