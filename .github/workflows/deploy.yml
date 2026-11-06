@@ -1,0 +1,60 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: deploy-production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Testet
+        run: dotnet test AmeWatches.slnx --configuration Release
+
+      - name: Ndërto API-n
+        run: dotnet publish src/AmeWatches.Api -c Release -r linux-x64 --self-contained false -o out/api
+
+      - name: Ndërto faqen
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Çelësi SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Ngarko te serveri
+        run: |
+          T="${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}"
+          rsync -az --delete --exclude appsettings.Development.json out/api/ "$T:/opt/ame/api/"
+          rsync -az --delete frontend/dist/frontend/ "$T:/opt/ame/web/"
+          rsync -az --delete deploy/ "$T:/opt/ame/deploy/"
+
+      - name: Rinis dhe kontrollo
+        run: |
+          ssh "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}" '
+            sudo systemctl restart ame-api ame-web
+            for i in $(seq 1 20); do curl -fsS http://127.0.0.1:5260/health && exit 0; sleep 3; done
+            echo "API-ja nuk u ngrit e shëndetshme" >&2
+            exit 1'
