@@ -1,0 +1,19 @@
+[Unit]
+Description=ame watches web (Angular SSR)
+After=network.target ame-api.service
+
+[Service]
+User=ame
+WorkingDirectory=/opt/ame/web
+Environment=NODE_ENV=production
+Environment=PORT=4000
+Environment=ALLOWED_HOSTS=__DOMAIN__,www.__DOMAIN__
+Environment=API_INTERNAL_URL=http://127.0.0.1:5260/api
+ExecStart=/usr/bin/node /opt/ame/web/server/server.mjs
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
