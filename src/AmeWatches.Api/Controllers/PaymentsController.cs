@@ -23,6 +23,9 @@ public class PaymentsController : ControllerBase
         _simulator = simulator;
     }
 
+    [HttpGet("methods")]
+    public IActionResult Methods() => Ok(new { card = _payments.CardPaymentsEnabled });
+
     [HttpPost("webhook")]
     public async Task<IActionResult> Webhook()
     {

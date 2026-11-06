@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { SSR_RESPONSE } from './app/util/ssr-response';
+import { API_INTERNAL_URL } from './app/util/ssr-api';
 import { environment } from './environments/environment';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -12,9 +13,11 @@ const browserDistFolder = resolve(serverDistFolder, '../browser');
 const indexHtml = join(serverDistFolder, 'index.server.html');
 
 const app = express();
+// Pas Caddy-t: merr protokollin (https) nga X-Forwarded-Proto.
+app.set('trust proxy', true);
 const allowedHosts = (process.env['ALLOWED_HOSTS'] ?? 'localhost').split(',').map((host) => host.trim()).filter(Boolean);
 const commonEngine = new CommonEngine({ allowedHosts });
-const apiBase = process.env['API_URL'] ?? environment.apiUrl;
+const apiBase = process.env['API_INTERNAL_URL'] ?? environment.apiUrl;
 
 /**
  * Example Express Rest API endpoints can be defined here.
@@ -85,6 +88,7 @@ app.get('**', (req, res, next) => {
       providers: [
         { provide: APP_BASE_HREF, useValue: baseUrl },
         { provide: SSR_RESPONSE, useValue: res },
+        { provide: API_INTERNAL_URL, useValue: process.env['API_INTERNAL_URL'] },
       ],
     })
     .then((html) => res.send(html))

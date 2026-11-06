@@ -9,6 +9,10 @@ export class PaymentService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/payments/simulator`;
 
+  getMethods(): Observable<{ card: boolean }> {
+    return this.http.get<{ card: boolean }>(`${environment.apiUrl}/payments/methods`);
+  }
+
   getSimulatorSession(sessionId: string): Observable<PaymentSessionInfo> {
     return this.http.get<PaymentSessionInfo>(`${this.url}/${encodeURIComponent(sessionId)}`);
   }

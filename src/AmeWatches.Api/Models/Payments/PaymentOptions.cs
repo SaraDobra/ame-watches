@@ -9,4 +9,6 @@ public class PaymentOptions
     public string? WebhookSecret { get; set; }
     public int ExpiryMinutes { get; set; } = 30;
     public int WebhookToleranceSeconds { get; set; } = 300;
+
+    public bool CardEnabled => !Provider.Equals("Disabled", StringComparison.OrdinalIgnoreCase);
 }

@@ -55,10 +55,14 @@ var paymentOptions = builder.Configuration.GetSection(PaymentOptions.SectionName
 if (paymentOptions.Provider.Equals("Simulator", StringComparison.OrdinalIgnoreCase))
 {
     if (builder.Environment.IsProduction())
-        throw new InvalidOperationException("Simulatori i pagesës nuk lejohet në prodhim. Vendos Payments:Provider te një ofrues real.");
+        throw new InvalidOperationException("Simulatori i pagesës nuk lejohet në prodhim. Vendos Payments:Provider te një ofrues real, ose te \"Disabled\" për të fikur pagesën me kartë.");
 
     builder.Services.AddSingleton<SimulatorPaymentProvider>();
     builder.Services.AddSingleton<IPaymentProvider>(sp => sp.GetRequiredService<SimulatorPaymentProvider>());
+}
+else if (paymentOptions.Provider.Equals("Disabled", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddSingleton<IPaymentProvider, DisabledPaymentProvider>();
 }
 else
 {

@@ -31,6 +31,9 @@ public class OrderService : IOrderService
 
     public async Task<CreateOrderResult> CreateOrder(CreateOrderRequest request)
     {
+        if (request.PaymentMethod == PaymentMethod.Card && !_payments.CardPaymentsEnabled)
+            return CreateOrderResult.Fail(OrderFailure.PaymentUnavailable, "Pagesa me kartë nuk është ende e disponueshme. Zgjidhni pagesën në dorëzim.");
+
         var lines = request.Items
             .GroupBy(i => i.ProductId)
             .Select(g => (ProductId: g.Key, Quantity: g.Sum(i => i.Quantity)))

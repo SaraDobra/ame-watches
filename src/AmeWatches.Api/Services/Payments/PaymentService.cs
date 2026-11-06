@@ -28,6 +28,8 @@ public class PaymentService : IPaymentService
         _logger = logger;
     }
 
+    public bool CardPaymentsEnabled => _options.CardEnabled;
+
     public async Task<PaymentSession> StartCardPayment(Order order)
     {
         var session = await _provider.CreateSession(new PaymentRequest(

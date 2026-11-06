@@ -14,6 +14,7 @@ public record PaymentSessionInfo(string OrderNo, decimal Amount, string Currency
 
 public interface IPaymentService
 {
+    bool CardPaymentsEnabled { get; }
     Task<PaymentSession> StartCardPayment(Order order);
     Task<WebhookResult> HandleWebhook(string body, string? signature);
     Task<PaymentSessionInfo?> GetSession(string sessionId);

@@ -57,10 +57,12 @@
             <input type="radio" formControlName="paymentMethod" value="CashOnDelivery">
             <span><strong>Pagesë në dorëzim</strong><small>Paguani kur ta merrni orën.</small></span>
           </label>
-          <label class="option" [class.option--selected]="form.controls.paymentMethod.value === 'Card'">
-            <input type="radio" formControlName="paymentMethod" value="Card">
-            <span><strong>Me kartë</strong><small>Do të ridrejtoheni te faqja e sigurt e pagesës. Porosia ruhet për 30 minuta.</small></span>
-          </label>
+          @if (cardEnabled()) {
+            <label class="option" [class.option--selected]="form.controls.paymentMethod.value === 'Card'">
+              <input type="radio" formControlName="paymentMethod" value="Card">
+              <span><strong>Me kartë</strong><small>Do të ridrejtoheni te faqja e sigurt e pagesës. Porosia ruhet për 30 minuta.</small></span>
+            </label>
+          }
         </div>
 
         @if (errors().length) {

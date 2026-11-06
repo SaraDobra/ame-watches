@@ -6,6 +6,8 @@ import { Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { CartService } from '../services/cart.service';
 import { OrderService } from '../services/order.service';
+import { PaymentService } from '../services/payment.service';
+import { catchError, of } from 'rxjs';
 import { apiErrors } from '../util/api-error';
 
 const PHONE = /^\+?[0-9][0-9\s\-]{6,18}[0-9]$/;
@@ -19,11 +21,13 @@ const PHONE = /^\+?[0-9][0-9\s\-]{6,18}[0-9]$/;
 export class CheckoutComponent {
   readonly cart = inject(CartService);
   private readonly orders = inject(OrderService);
+  private readonly paymentService = inject(PaymentService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly fb = inject(FormBuilder);
 
   submitting = signal(false);
+  cardEnabled = signal(false);
   errors = signal<string[]>([]);
   checked = signal(false);
 
@@ -38,6 +42,8 @@ export class CheckoutComponent {
 
   constructor() {
     inject(Title).setTitle('Porosia | amé watches');
+    this.paymentService.getMethods().pipe(catchError(() => of({ card: false })), takeUntilDestroyed(this.destroyRef))
+      .subscribe(m => this.cardEnabled.set(m.card));
     inject(Meta).updateTag({ name: 'robots', content: 'noindex' });
 
     effect(() => {
