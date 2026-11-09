@@ -15,6 +15,8 @@ public class ImageUploadTests : IDisposable
     private static readonly byte[] Jpeg = [0xFF, 0xD8, 0xFF, 0xE0, 0, 0x10, 0x4A, 0x46, 0x49, 0x46, 0, 1, 1, 2, 3];
     private static readonly byte[] Png = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0, 0, 0, 0x0D, 1, 2, 3];
     private static readonly byte[] Webp = [(byte)'R', (byte)'I', (byte)'F', (byte)'F', 1, 2, 3, 4, (byte)'W', (byte)'E', (byte)'B', (byte)'P', 9, 9];
+    private static readonly byte[] Avif = [0, 0, 0, 0x1C, (byte)'f', (byte)'t', (byte)'y', (byte)'p', (byte)'a', (byte)'v', (byte)'i', (byte)'f', 0, 0, 0, 0, (byte)'m', (byte)'i', (byte)'f', (byte)'1', (byte)'a', (byte)'v', (byte)'i', (byte)'f', 1, 2, 3, 4];
+    private static readonly byte[] Heic = [0, 0, 0, 0x18, (byte)'f', (byte)'t', (byte)'y', (byte)'p', (byte)'h', (byte)'e', (byte)'i', (byte)'c', 0, 0, 0, 0, (byte)'m', (byte)'i', (byte)'f', (byte)'1', (byte)'h', (byte)'e', (byte)'i', (byte)'c', 1, 2, 3, 4];
     private static readonly byte[] Html = "<html><script>alert(1)</script></html>"u8.ToArray();
 
     private readonly string _folder = Path.Combine(Path.GetTempPath(), "ame-uploads-" + Guid.NewGuid().ToString("N"));
@@ -51,9 +53,10 @@ public class ImageUploadTests : IDisposable
     [InlineData("jpg")]
     [InlineData("png")]
     [InlineData("webp")]
+    [InlineData("avif")]
     public void TheValidator_RecognisesRealImages(string expected)
     {
-        var bytes = expected switch { "jpg" => Jpeg, "png" => Png, _ => Webp };
+        var bytes = expected switch { "jpg" => Jpeg, "png" => Png, "avif" => Avif, _ => Webp };
         Assert.Equal(expected, ImageValidator.DetectExtension(bytes));
     }
 
@@ -61,6 +64,7 @@ public class ImageUploadTests : IDisposable
     public void TheValidator_RejectsHtmlEmptyAndTruncatedData()
     {
         Assert.Null(ImageValidator.DetectExtension(Html));
+        Assert.Null(ImageValidator.DetectExtension(Heic));
         Assert.Null(ImageValidator.DetectExtension([]));
         Assert.Null(ImageValidator.DetectExtension([0xFF, 0xD8]));
         Assert.Null(ImageValidator.DetectExtension([(byte)'R', (byte)'I', (byte)'F', (byte)'F', 0, 0, 0, 0, (byte)'A', (byte)'V', (byte)'I', (byte)' ']));

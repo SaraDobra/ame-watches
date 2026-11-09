@@ -47,6 +47,6 @@ public partial class LocalImageStorage : IImageStorage
         return Task.CompletedTask;
     }
 
-    [GeneratedRegex(@"^[0-9a-f]{32}\.(jpg|png|webp)$")]
+    [GeneratedRegex(@"^[0-9a-f]{32}\.(jpg|png|webp|avif)$")]
     private static partial Regex SafeName();
 }
