@@ -54,7 +54,7 @@ public class AdminImageService : IAdminImageService
                 var read = await stream.ReadAtLeastAsync(header, header.Length, throwOnEndOfStream: false, cancellationToken);
                 var extension = ImageValidator.DetectExtension(header.AsSpan(0, read));
                 if (extension is null)
-                    return AdminResult<AdminProductDetail>.Invalid($"\"{file.FileName}\" nuk është foto e vlefshme (JPG, PNG ose WebP).");
+                    return AdminResult<AdminProductDetail>.Invalid($"\"{file.FileName}\" nuk është foto e vlefshme (JPG, PNG, WebP ose AVIF).");
 
                 extensions.Add(extension);
             }

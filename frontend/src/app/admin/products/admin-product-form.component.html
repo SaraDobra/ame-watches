@@ -110,7 +110,7 @@
 
         <label class="drop" [class.drag]="dragging()" (dragover)="$event.preventDefault(); dragging.set(true)"
                (dragleave)="dragging.set(false)" (drop)="onDrop($event)">
-          <input type="file" multiple accept="image/jpeg,image/png,image/webp" (change)="onPick($event)" [disabled]="uploading()">
+          <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" (change)="onPick($event)" [disabled]="uploading()">
           <strong>{{ uploading() ? 'Duke ngarkuar...' : 'Zgjidhni foto ose tërhiqini këtu' }}</strong>
         </label>
 
