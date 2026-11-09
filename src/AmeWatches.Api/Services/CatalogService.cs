@@ -17,6 +17,19 @@ public class CatalogService : ICatalogService
             .Select(b => new BrandResponse(b.Id, b.Name, b.Slug, b.Products.Count(p => p.IsActive)))
             .ToListAsync();
 
+    public async Task<List<CategoryResponse>> GetCategories(string? brandSlug)
+    {
+        // Kategoritë pa asnjë orë aktive nuk shfaqen te klientët (do të çonin në faqe bosh).
+        var categories = _db.Categories.AsNoTracking().Where(c => c.Products.Any(p => p.IsActive));
+        if (!string.IsNullOrWhiteSpace(brandSlug))
+            categories = categories.Where(c => c.Brand.Slug == brandSlug);
+
+        return await categories
+            .OrderBy(c => c.Brand.Name).ThenBy(c => c.Name)
+            .Select(c => new CategoryResponse(c.Id, c.Name, c.Slug, c.Brand.Slug, c.Products.Count(p => p.IsActive)))
+            .ToListAsync();
+    }
+
     public async Task<PagedResult<ProductListItem>> GetProducts(ProductQuery query)
     {
         var products = Filter(_db.Products.AsNoTracking().Where(p => p.IsActive), query);
@@ -38,7 +51,9 @@ public class CatalogService : ICatalogService
                 p.Gender.ToString(),
                 p.Type.ToString(),
                 p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault(),
-                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).Skip(1).FirstOrDefault()))
+                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).Skip(1).FirstOrDefault(),
+                p.Category != null ? p.Category.Name : null,
+                p.Category != null ? p.Category.Slug : null))
             .ToListAsync();
 
         return new PagedResult<ProductListItem>(items, query.Page, query.PageSize, total);
@@ -55,6 +70,8 @@ public class CatalogService : ICatalogService
                 Brand = p.Brand.Name, BrandSlug = p.Brand.Slug,
                 p.Description, p.Price, p.Stock, p.Gender, p.Type,
                 p.CaseSizeMm, p.WaterResistanceM, p.Movement,
+                Category = p.Category != null ? p.Category.Name : null,
+                CategorySlug = p.Category != null ? p.Category.Slug : null,
                 Images = p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).ToList()
             })
             .FirstOrDefaultAsync();
@@ -66,7 +83,8 @@ public class CatalogService : ICatalogService
             product.Id, product.Name, product.Slug, product.ModelCode,
             product.Brand, product.BrandSlug, product.Description, product.Price,
             product.Stock, product.Stock > 0, product.Gender.ToString(), product.Type.ToString(),
-            product.CaseSizeMm, product.WaterResistanceM, product.Movement, product.Images);
+            product.CaseSizeMm, product.WaterResistanceM, product.Movement, product.Images,
+            product.Category, product.CategorySlug);
     }
 
     public async Task<PriceRange> GetPriceRange()
@@ -108,6 +126,9 @@ public class CatalogService : ICatalogService
     {
         if (!string.IsNullOrWhiteSpace(query.Brand))
             products = products.Where(p => p.Brand.Slug == query.Brand);
+
+        if (!string.IsNullOrWhiteSpace(query.Category))
+            products = products.Where(p => p.Category != null && p.Category.Slug == query.Category);
 
         if (query.MinPrice is decimal min)
             products = products.Where(p => p.Price >= min);

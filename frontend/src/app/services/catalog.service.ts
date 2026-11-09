@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Brand, PagedResult, PriceRange, ProductDetail, ProductFilter, ProductListItem, ProductSuggestion } from '../models/catalog.models';
+import { Brand, Category, PagedResult, PriceRange, ProductDetail, ProductFilter, ProductListItem, ProductSuggestion } from '../models/catalog.models';
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
@@ -11,6 +11,10 @@ export class CatalogService {
 
   getBrands(): Observable<Brand[]> {
     return this.http.get<Brand[]>(`${this.url}/brands`);
+  }
+
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(`${this.url}/categories`);
   }
 
   getProducts(filter: ProductFilter = {}): Observable<PagedResult<ProductListItem>> {

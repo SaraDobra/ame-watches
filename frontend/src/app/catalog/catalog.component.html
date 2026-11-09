@@ -32,13 +32,26 @@
     <div class="group">
       <span class="label">Brendi</span>
       <div class="pills">
-        <button type="button" class="pill" [class.pill--on]="!filter().brand" (click)="setFilter({ brand: '' })">Të gjitha</button>
+        <button type="button" class="pill" [class.pill--on]="!filter().brand" (click)="setFilter({ brand: '', category: '' })">Të gjitha</button>
         @for (b of brands(); track b.id) {
           <button type="button" class="pill" [class.pill--on]="filter().brand === b.slug"
-                  (click)="setFilter({ brand: b.slug })">{{ b.name }} <small>{{ b.productCount }}</small></button>
+                  (click)="setFilter({ brand: b.slug, category: '' })">{{ b.name }} <small>{{ b.productCount }}</small></button>
         }
       </div>
     </div>
+
+    @if (visibleCategories().length > 0) {
+      <div class="group">
+        <span class="label">Kategoria</span>
+        <div class="pills">
+          <button type="button" class="pill" [class.pill--on]="!filter().category" (click)="setFilter({ category: '' })">Të gjitha</button>
+          @for (c of visibleCategories(); track c.id) {
+            <button type="button" class="pill" [class.pill--on]="filter().category === c.slug"
+                    (click)="setFilter({ category: c.slug, brand: c.brandSlug })">{{ c.name }} <small>{{ c.productCount }}</small></button>
+          }
+        </div>
+      </div>
+    }
 
     @if (bounds(); as range) {
       <div class="group">

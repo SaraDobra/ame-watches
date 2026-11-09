@@ -41,6 +41,13 @@
             @for (b of brands(); track b.id) { <option [ngValue]="b.id">{{ b.name }}</option> }
           </select>
         </div>
+        <div class="adm-field">
+          <label for="categoryId">Kategoria <small>(opsionale)</small></label>
+          <select id="categoryId" formControlName="categoryId">
+            <option [ngValue]="null">Pa kategori</option>
+            @for (c of categoryOptions(); track c.id) { <option [ngValue]="c.id">{{ c.name }}</option> }
+          </select>
+        </div>
         <div class="adm-field" [class.adm-field--bad]="bad('price')">
           <label for="price">Çmimi (€)</label>
           <input id="price" type="number" step="0.01" formControlName="price">
@@ -104,7 +111,7 @@
     @if (id !== null && product()) {
       <section class="adm-card photos">
         <h2>Fotot <small>({{ product()!.images.length }} nga {{ maxImages }})</small></h2>
-        <p class="adm-sub">Foto e parë është ajo kryesore: shfaqet te kartela në dyqan. JPG, PNG ose WebP, deri në 5 MB.</p>
+        <p class="adm-sub">Foto e parë është ajo kryesore: shfaqet te kartela në dyqan. JPG, PNG, WebP ose AVIF, deri në 5 MB.</p>
 
         @if (imageError()) { <p class="adm-errors" role="alert">{{ imageError() }}</p> }
 

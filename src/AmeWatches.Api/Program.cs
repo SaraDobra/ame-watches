@@ -143,6 +143,7 @@ builder.Services.AddSingleton<LocalImageStorage>();
 builder.Services.AddSingleton<IImageStorage>(sp => sp.GetRequiredService<LocalImageStorage>());
 builder.Services.AddScoped<IAdminImageService, AdminImageService>();
 builder.Services.AddScoped<IAdminProductService, AdminProductService>();
+builder.Services.AddScoped<IAdminCategoryService, AdminCategoryService>();
 builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 
 builder.Services.AddCors(options =>

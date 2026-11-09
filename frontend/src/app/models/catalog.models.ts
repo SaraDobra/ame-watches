@@ -5,6 +5,14 @@ export interface Brand {
   productCount: number;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  brandSlug: string;
+  productCount: number;
+}
+
 export interface ProductListItem {
   id: number;
   name: string;
@@ -18,6 +26,8 @@ export interface ProductListItem {
   type: string;
   imageUrl: string | null;
   secondImageUrl: string | null;
+  category?: string | null;
+  categorySlug?: string | null;
 }
 
 export interface PagedResult<T> {
@@ -30,6 +40,7 @@ export interface PagedResult<T> {
 
 export interface ProductFilter {
   brand?: string;
+  category?: string;
   minPrice?: number;
   maxPrice?: number;
   gender?: string;
@@ -57,6 +68,8 @@ export interface ProductDetail {
   waterResistanceM: number | null;
   movement: string | null;
   images: string[];
+  category?: string | null;
+  categorySlug?: string | null;
 }
 
 export interface PriceRange {
