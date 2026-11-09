@@ -20,6 +20,9 @@ public class Order
     public decimal Shipping { get; set; }
     public decimal Total { get; set; }
 
+    public string? PaymentSessionId { get; set; }
+    public DateTime? PaidAt { get; set; }
+
     public DateTime? WarrantyUntil { get; set; }
     public DateTime CreatedAt { get; set; }
 

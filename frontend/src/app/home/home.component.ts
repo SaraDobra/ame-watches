@@ -1,19 +1,21 @@
+import { SeoService } from '../services/seo.service';
 import { Component, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CatalogService } from '../services/catalog.service';
 import { Brand, ProductListItem } from '../models/catalog.models';
 import { ProductCardComponent } from '../shared/product-card.component';
-import { WatchArtComponent } from '../shared/watch-art.component';
+import { RevealDirective } from '../directives/reveal.directive';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, ProductCardComponent, WatchArtComponent],
+  imports: [RouterLink, ProductCardComponent, RevealDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
   private readonly catalog = inject(CatalogService);
+  private readonly seo = inject(SeoService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   featured = signal<ProductListItem[]>([]);
@@ -22,13 +24,14 @@ export class HomeComponent implements OnInit {
   failed = signal(false);
 
   readonly benefits = [
-    { title: 'Garanci 1 vit', text: 'Çdo orë mbulohet nga garancia e amé watches për një vit të plotë.' },
-    { title: 'Dërgesë falas', text: 'Porosia mbërrin te dera juaj pa kosto shtesë, në gjithë vendin.' },
-    { title: 'Ora origjinale', text: 'Shesim vetëm modele autentike Casio dhe Q&Q.' },
-    { title: 'Pagesë e lehtë', text: 'Paguani në dorëzim ose me kartë, sipas zgjedhjes suaj.' }
+    { icon: 'shield', title: 'Garanci 1 vit', text: 'Çdo orë mbulohet nga garancia e amé watches për një vit të plotë.' },
+    { icon: 'truck', title: 'Dërgesë falas', text: 'Porosia mbërrin te dera juaj pa kosto shtesë, në gjithë vendin.' },
+    { icon: 'watch', title: 'Ora origjinale', text: 'Shesim vetëm modele autentike Casio dhe Q&Q.' },
+    { icon: 'card', title: 'Pagesë e lehtë', text: 'Paguani në dorëzim ose me kartë, sipas zgjedhjes suaj.' }
   ];
 
   ngOnInit(): void {
+    this.seo.setCanonical('/');
     if (!this.isBrowser) return;
 
     this.catalog.getProducts({ pageSize: 4, sort: 'Newest' }).subscribe({

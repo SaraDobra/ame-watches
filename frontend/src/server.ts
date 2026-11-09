@@ -5,14 +5,19 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
 import { SSR_RESPONSE } from './app/util/ssr-response';
+import { API_INTERNAL_URL } from './app/util/ssr-api';
+import { environment } from './environments/environment';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
 const indexHtml = join(serverDistFolder, 'index.server.html');
 
 const app = express();
+// Pas Caddy-t: merr protokollin (https) nga X-Forwarded-Proto.
+app.set('trust proxy', true);
 const allowedHosts = (process.env['ALLOWED_HOSTS'] ?? 'localhost').split(',').map((host) => host.trim()).filter(Boolean);
 const commonEngine = new CommonEngine({ allowedHosts });
+const apiBase = process.env['API_INTERNAL_URL'] ?? environment.apiUrl;
 
 /**
  * Example Express Rest API endpoints can be defined here.
@@ -25,6 +30,37 @@ const commonEngine = new CommonEngine({ allowedHosts });
  * });
  * ```
  */
+
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
+/**
+ * robots.txt dhe sitemap.xml: domeni merret nga kërkesa, pra nuk ka adresë të shkruar me dorë.
+ */
+app.get('/robots.txt', (req, res) => {
+  const origin = `${req.protocol}://${req.headers.host}`;
+  res.type('text/plain').send(
+    `User-agent: *\nDisallow: /admin\nDisallow: /porosia\nDisallow: /shporta\nDisallow: /pagesa\n\nSitemap: ${origin}/sitemap.xml\n`);
+});
+
+app.get('/sitemap.xml', async (req, res) => {
+  const origin = `${req.protocol}://${req.headers.host}`;
+  try {
+    const response = await fetch(`${apiBase}/products?pageSize=48`);
+    if (!response.ok) throw new Error(String(response.status));
+    const { items } = (await response.json()) as { items: { slug: string }[] };
+    const urls = ['/', '/ora', '/privatesia', '/kushtet', '/dergesa-pagesa', '/garancia-kthimi', ...items.map((p) => `/ora/${encodeURIComponent(p.slug)}`)];
+    res.type('application/xml').send(
+      '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' +
+      urls.map((u) => `<url><loc>${origin}${u}</loc></url>`).join('') + '</urlset>');
+  } catch {
+    res.status(503).send('Sitemap nuk është i gatshëm');
+  }
+});
 
 /**
  * Serve static files from /browser
@@ -52,6 +88,7 @@ app.get('**', (req, res, next) => {
       providers: [
         { provide: APP_BASE_HREF, useValue: baseUrl },
         { provide: SSR_RESPONSE, useValue: res },
+        { provide: API_INTERNAL_URL, useValue: process.env['API_INTERNAL_URL'] },
       ],
     })
     .then((html) => res.send(html))

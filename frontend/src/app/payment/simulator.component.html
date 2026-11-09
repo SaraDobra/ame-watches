@@ -1,0 +1,30 @@
+<section class="container wrap">
+  <div class="banner" role="note">FAQE TESTUESE — nuk po paguhet asgjë e vërtetë</div>
+
+  @if (loading()) {
+    <div class="skeleton"></div>
+  } @else if (unavailable() || !session()) {
+    <div class="box">
+      <h1>Kjo faqe nuk është e disponueshme</h1>
+      <p>Faqja e simulimit funksionon vetëm gjatë zhvillimit.</p>
+    </div>
+  } @else {
+    <div class="box">
+      <span class="label">Pagesë me kartë</span>
+      <h1>{{ session()!.amount | number: '1.0-2' }} {{ session()!.currency === 'EUR' ? '€' : session()!.currency }}</h1>
+      <p>Porosia <strong>{{ session()!.orderNo }}</strong></p>
+      <p class="hint">Në prodhim këtu do të shfaqet faqja e sigurt e bankës. Zgjidhni rezultatin që doni të provoni.</p>
+
+      @if (errors().length) {
+        <ul class="errors" role="alert">
+          @for (e of errors(); track e) { <li>{{ e }}</li> }
+        </ul>
+      }
+
+      <div class="actions">
+        <button type="button" class="btn btn--gold" [disabled]="working()" (click)="finish('Paid')">Simulo pagesë të suksesshme</button>
+        <button type="button" class="btn btn--ghost-dark" [disabled]="working()" (click)="finish('Failed')">Simulo pagesë të dështuar</button>
+      </div>
+    </div>
+  }
+</section>

@@ -24,6 +24,7 @@ export interface OrderCreated {
   orderNo: string;
   accessToken: string;
   total: number;
+  paymentUrl: string | null;
 }
 
 export interface OrderLine {
@@ -49,5 +50,13 @@ export interface Order {
   shipping: number;
   total: number;
   createdAt: string;
+  paidAt: string | null;
   items: OrderLine[];
+}
+
+export interface PaymentSessionInfo {
+  orderNo: string;
+  amount: number;
+  currency: string;
+  paymentStatus: string;
 }

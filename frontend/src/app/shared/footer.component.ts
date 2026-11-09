@@ -20,12 +20,14 @@ import { LogoComponent } from './logo.component';
         </div>
         <div>
           <h4>Informacion</h4>
-          <a routerLink="/" fragment="pse-ame">Garancia</a>
-          <a routerLink="/" fragment="pse-ame">Dërgesa</a>
-          <a routerLink="/" fragment="pse-ame">Mënyrat e pagesës</a>
+          <a routerLink="/garancia-kthimi">Garancia dhe kthimi</a>
+          <a routerLink="/dergesa-pagesa">Dërgesa dhe pagesa</a>
+          <a routerLink="/kushtet">Kushtet e përdorimit</a>
+          <a routerLink="/privatesia">Privatësia</a>
         </div>
         <div>
           <h4>Kontakti</h4>
+          <a href="mailto:ame.accessories.ks&#64;gmail.com">ame.accessories.ks&#64;gmail.com</a>
           <a href="https://www.instagram.com/ame.watches.ks/" target="_blank" rel="noopener noreferrer">Instagram &#64;ame.watches.ks</a>
         </div>
       </div>

@@ -1,0 +1,18 @@
+[Unit]
+Description=ame watches API
+After=network.target docker.service
+Wants=docker.service
+
+[Service]
+User=ame
+WorkingDirectory=/opt/ame/api
+EnvironmentFile=/etc/ame/api.env
+ExecStart=/usr/bin/dotnet /opt/ame/api/AmeWatches.Api.dll
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/opt/ame/uploads
+
+[Install]
+WantedBy=multi-user.target

@@ -24,13 +24,13 @@ public class OrderConcurrencyTests
             productId = product.Id;
         }
 
-        var request = new CreateOrderRequest("Blerës Test", "044123456", null, "Rruga 1, Prishtinë", "Prishtinë",
+        var request = new CreateOrderRequest("Blerës Test", "044123456", "klient@mail.com", "Rruga 1, Prishtinë", "Prishtinë",
             PaymentMethod.CashOnDelivery, [new OrderItemRequest(productId, 1)]);
 
         var attempts = Enumerable.Range(0, 10).Select(async _ =>
         {
             await using var context = sql.NewContext();
-            return await new OrderService(context).CreateOrder(request);
+            return await new PaymentTestKit(context).Orders.CreateOrder(request);
         });
         var results = await Task.WhenAll(attempts);
 

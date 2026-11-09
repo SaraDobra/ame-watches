@@ -22,7 +22,9 @@ export class CartService {
 
   constructor() {
     afterNextRender(() => {
-      this.items.set(this.read());
+      const stored = this.read();
+      this.items.update(current => [...stored.filter(item => !current.some(c => c.productId === item.productId)), ...current]);
+      this.write();
       this.ready.set(true);
     });
   }

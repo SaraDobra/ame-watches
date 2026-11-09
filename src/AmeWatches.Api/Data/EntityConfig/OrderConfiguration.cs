@@ -16,6 +16,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         b.Property(x => x.Address).IsRequired().HasMaxLength(250);
         b.Property(x => x.City).IsRequired().HasMaxLength(100);
 
+        b.Property(x => x.PaymentSessionId).HasMaxLength(100);
+
         b.Property(x => x.Status).HasConversion<string>().HasMaxLength(20);
         b.Property(x => x.PaymentMethod).HasConversion<string>().HasMaxLength(20);
         b.Property(x => x.PaymentStatus).HasConversion<string>().HasMaxLength(20);
@@ -25,6 +27,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         b.Property(x => x.Total).HasColumnType("decimal(18,2)");
 
         b.HasIndex(x => x.OrderNo).IsUnique();
+        b.HasIndex(x => x.PaymentSessionId).IsUnique().HasFilter("[PaymentSessionId] IS NOT NULL");
         b.HasIndex(x => new { x.Status, x.CreatedAt });
     }
 }

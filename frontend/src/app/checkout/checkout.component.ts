@@ -6,6 +6,8 @@ import { Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { CartService } from '../services/cart.service';
 import { OrderService } from '../services/order.service';
+import { PaymentService } from '../services/payment.service';
+import { catchError, of } from 'rxjs';
 import { apiErrors } from '../util/api-error';
 
 const PHONE = /^\+?[0-9][0-9\s\-]{6,18}[0-9]$/;
@@ -19,18 +21,20 @@ const PHONE = /^\+?[0-9][0-9\s\-]{6,18}[0-9]$/;
 export class CheckoutComponent {
   readonly cart = inject(CartService);
   private readonly orders = inject(OrderService);
+  private readonly paymentService = inject(PaymentService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly fb = inject(FormBuilder);
 
   submitting = signal(false);
+  cardEnabled = signal(false);
   errors = signal<string[]>([]);
   checked = signal(false);
 
   form = this.fb.nonNullable.group({
     customerName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
     phone: ['', [Validators.required, Validators.pattern(PHONE)]],
-    email: ['', [Validators.email, Validators.maxLength(150)]],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
     city: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     address: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(250)]],
     paymentMethod: ['CashOnDelivery' as 'CashOnDelivery' | 'Card']
@@ -38,6 +42,8 @@ export class CheckoutComponent {
 
   constructor() {
     inject(Title).setTitle('Porosia | amé watches');
+    this.paymentService.getMethods().pipe(catchError(() => of({ card: false })), takeUntilDestroyed(this.destroyRef))
+      .subscribe(m => this.cardEnabled.set(m.card));
     inject(Meta).updateTag({ name: 'robots', content: 'noindex' });
 
     effect(() => {
@@ -74,7 +80,7 @@ export class CheckoutComponent {
     this.orders.create({
       customerName: value.customerName.trim(),
       phone: value.phone.trim(),
-      email: value.email.trim() || null,
+      email: value.email.trim(),
       city: value.city.trim(),
       address: value.address.trim(),
       paymentMethod: value.paymentMethod,
@@ -82,6 +88,10 @@ export class CheckoutComponent {
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: created => {
         this.cart.clear();
+        if (created.paymentUrl) {
+          window.location.assign(created.paymentUrl);
+          return;
+        }
         this.router.navigate(['/porosia/konfirmim', created.orderNo], { queryParams: { token: created.accessToken } });
       },
       error: err => {

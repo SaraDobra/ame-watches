@@ -1,0 +1,20 @@
+__DOMAIN__ {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:5260
+	}
+	handle /uploads/* {
+		reverse_proxy 127.0.0.1:5260
+	}
+	handle /health {
+		reverse_proxy 127.0.0.1:5260
+	}
+	handle {
+		reverse_proxy 127.0.0.1:4000
+	}
+}
+
+www.__DOMAIN__ {
+	redir https://__DOMAIN__{uri} permanent
+}

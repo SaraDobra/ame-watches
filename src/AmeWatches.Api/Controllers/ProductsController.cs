@@ -20,6 +20,19 @@ public class ProductsController : ControllerBase
         return Ok(await _catalog.GetProducts(query));
     }
 
+    [HttpGet("price-range")]
+    public async Task<IActionResult> PriceRange()
+        => Ok(await _catalog.GetPriceRange());
+
+    [HttpGet("suggest")]
+    public async Task<IActionResult> Suggest([FromQuery] string? q)
+    {
+        if (q is { Length: > 60 })
+            return BadRequest(new { message = "Kërkimi është shumë i gjatë." });
+
+        return Ok(await _catalog.Suggest(q ?? string.Empty));
+    }
+
     [HttpGet("{slug}")]
     public async Task<IActionResult> GetBySlug(string slug)
     {

@@ -13,7 +13,7 @@ export class OrderService {
     return this.http.post<OrderCreated>(this.url, request);
   }
 
-  get(orderNo: string, token: string): Observable<Order> {
-    return this.http.get<Order>(`${this.url}/${encodeURIComponent(orderNo)}`, { params: { token } });
+  get(orderNo: string, token: string, fresh = false): Observable<Order> {
+    return this.http.get<Order>(`${this.url}/${encodeURIComponent(orderNo)}`, { params: { token }, transferCache: !fresh });
   }
 }

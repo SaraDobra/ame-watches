@@ -11,14 +11,14 @@ public record OrderItemRequest(
 public record CreateOrderRequest(
     [Required, StringLength(150, MinimumLength = 3)] string CustomerName,
     [Required, RegularExpression(@"^\+?[0-9][0-9\s\-]{6,18}[0-9]$", ErrorMessage = "Numri i telefonit nuk është i vlefshëm.")] string Phone,
-    [EmailAddress, StringLength(150)] string? Email,
+    [Required, EmailAddress, StringLength(150)] string Email,
     [Required, StringLength(250, MinimumLength = 5)] string Address,
     [Required, StringLength(100, MinimumLength = 2)] string City,
     [EnumDataType(typeof(PaymentMethod))] PaymentMethod PaymentMethod,
     [Required, MinLength(1), MaxLength(20)] List<OrderItemRequest> Items
 );
 
-public record OrderCreatedResponse(string OrderNo, string AccessToken, decimal Total);
+public record OrderCreatedResponse(string OrderNo, string AccessToken, decimal Total, string? PaymentUrl = null);
 
 public record OrderLineResponse(
     int ProductId,
@@ -43,6 +43,7 @@ public record OrderResponse(
     decimal Shipping,
     decimal Total,
     DateTime CreatedAt,
+    DateTime? PaidAt,
     IReadOnlyList<OrderLineResponse> Items
 );
 

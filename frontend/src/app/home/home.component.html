@@ -1,24 +1,28 @@
 <section class="hero">
   <div class="container hero-grid">
     <div class="hero-text">
-      <span class="eyebrow">Casio &nbsp;·&nbsp; Q&amp;Q</span>
-      <h1>Ora origjinale, të përzgjedhura për çdo stil.</h1>
-      <p>Modele autentike me garanci 1 vit nga amé watches dhe dërgesë falas në gjithë vendin.</p>
-      <div class="actions">
+      <span class="eyebrow rise" style="--d: 0ms">Casio &nbsp;·&nbsp; Q&amp;Q</span>
+      <h1 class="rise" style="--d: 120ms">Ora origjinale, të përzgjedhura për çdo stil.</h1>
+      <p class="rise" style="--d: 260ms">Modele autentike me garanci 1 vit nga amé watches dhe dërgesë falas në gjithë vendin.</p>
+      <div class="actions rise" style="--d: 400ms">
         <a routerLink="/ora" class="btn btn--gold">Shiko koleksionin</a>
         <a routerLink="/" fragment="brendet" class="btn btn--ghost">Zbulo brendet</a>
       </div>
     </div>
-    <div class="hero-art">
-      <div class="glow"></div>
-      <app-watch-art tone="black" label="Orë amé watches" />
+    <div class="hero-art rise" style="--d: 300ms">
+      <div class="frame" aria-hidden="true"></div>
+      <div class="arch">
+        <img src="/products/qq-rect-white-1.webp" width="600" height="683" fetchpriority="high"
+             alt="Orë e artë Q&Q me kuadrant të bardhë në dorë">
+      </div>
+      <span class="seal">Garanci<br><strong>1 vit</strong></span>
     </div>
   </div>
 </section>
 
 <section id="koleksioni" class="section">
   <div class="container">
-    <header class="section-head">
+    <header class="section-head" appReveal>
       <span class="eyebrow eyebrow--dark">Koleksioni</span>
       <h2>Të zgjedhurat</h2>
       <p>Modelet më të reja nga koleksioni ynë.</p>
@@ -34,11 +38,11 @@
       <p class="note">Koleksioni nuk po ngarkohet për momentin. Provoni përsëri pas pak.</p>
     } @else {
       <div class="grid">
-        @for (product of featured(); track product.id) {
-          <app-product-card [product]="product" />
+        @for (product of featured(); track product.id; let i = $index) {
+          <app-product-card [product]="product" [appReveal]="i * 90" />
         }
       </div>
-      <div class="more">
+      <div class="more" appReveal>
         <a routerLink="/ora" class="btn btn--dark">Shiko të gjitha orët</a>
       </div>
     }
@@ -47,31 +51,38 @@
 
 <section id="brendet" class="brands">
   <div class="container brands-grid">
-    <article class="brand brand--casio">
+    <article class="brand brand--casio" appReveal>
       <span class="eyebrow">Brendi</span>
       <h2>Casio</h2>
       <p>Markë japoneze e njohur për saktësi dhe qëndrueshmëri, me modele për gra dhe për burra.</p>
-      <a routerLink="/ora" [queryParams]="{ brand: 'casio' }" class="link">{{ brandCount('casio') }} · Shiko modelet →</a>
+      <a routerLink="/ora" [queryParams]="{ brand: 'casio' }" class="link">{{ brandCount('casio') }} · Shiko modelet <span aria-hidden="true">→</span></a>
     </article>
-    <article class="brand brand--qq">
+    <article class="brand brand--qq" [appReveal]="140">
       <span class="eyebrow">Brendi</span>
       <h2>Q&amp;Q</h2>
       <p>Ora elegante dhe të lehta për çdo ditë, me dizajn të pastër dhe çmim të arritshëm.</p>
-      <a routerLink="/ora" [queryParams]="{ brand: 'q-and-q' }" class="link">{{ brandCount('q-and-q') }} · Shiko modelet →</a>
+      <a routerLink="/ora" [queryParams]="{ brand: 'q-and-q' }" class="link">{{ brandCount('q-and-q') }} · Shiko modelet <span aria-hidden="true">→</span></a>
     </article>
   </div>
 </section>
 
 <section id="pse-ame" class="section section--ivory">
   <div class="container">
-    <header class="section-head">
+    <header class="section-head" appReveal>
       <span class="eyebrow eyebrow--dark">Pse amé watches</span>
       <h2>Blini me qetësi</h2>
     </header>
     <div class="benefits">
-      @for (b of benefits; track b.title) {
-        <div class="benefit">
-          <span class="num"></span>
+      @for (b of benefits; track b.title; let i = $index) {
+        <div class="benefit" [appReveal]="i * 110">
+          <svg class="icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            @switch (b.icon) {
+              @case ('shield') { <path d="M24 5 8 11v11c0 10 7 17 16 21 9-4 16-11 16-21V11L24 5Z"/><path d="m17 24 5 5 9-10"/> }
+              @case ('truck') { <path d="M4 12h24v20H4z"/><path d="M28 18h9l7 8v6H28z"/><circle cx="12" cy="35" r="3.5"/><circle cx="35" cy="35" r="3.5"/> }
+              @case ('watch') { <circle cx="24" cy="24" r="11"/><path d="M24 17v7l5 3M19 4h10l1 7H18zM18 37h12l-1 7H19z"/> }
+              @default { <rect x="5" y="11" width="38" height="26" rx="3"/><path d="M5 19h38M11 29h9"/> }
+            }
+          </svg>
           <h3>{{ b.title }}</h3>
           <p>{{ b.text }}</p>
         </div>

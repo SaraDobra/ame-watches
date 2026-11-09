@@ -1,30 +1,41 @@
 .detail { padding-top: 2rem; padding-bottom: 2rem; }
-.crumbs { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
+.crumbs { font-size: 0.74rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
 .crumbs a { text-decoration: none; color: var(--gold-dark); }
 .crumbs a:hover { text-decoration: underline; }
 
 .layout { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 4rem; align-items: start; }
 .gallery { position: sticky; top: 110px; }
-.stage { background: #fff; border: 1px solid var(--line); padding: 1.5rem; display: flex; align-items: center; justify-content: center; aspect-ratio: 1 / 1; }
-.stage img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.stage { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); padding: 1.5rem; display: flex; align-items: center; justify-content: center; aspect-ratio: 1 / 1; }
+.stage { overflow: hidden; }
+.stage img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+.stage img.photo { animation: fade 0.45s var(--ease) both; transition: transform 0.5s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .stage { cursor: zoom-in; }
+  .stage:hover img.photo { transform: scale(1.8); }
+}
 .stage app-watch-art { width: 55%; }
 .thumbs { display: flex; gap: 0.7rem; margin-top: 0.9rem; }
-.thumbs button { width: 84px; height: 84px; padding: 0.3rem; background: #fff; border: 1px solid var(--line); cursor: pointer; transition: border-color 0.2s; }
+.thumbs button { width: 84px; height: 84px; padding: 0.3rem; background: #fff; border-radius: var(--radius-sm); border: 1px solid var(--line); cursor: pointer; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.thumbs button:hover { transform: translateY(-2px); }
 .thumbs button img { width: 100%; height: 100%; object-fit: contain; }
 .thumbs button:hover { border-color: var(--gold); }
 .thumbs button.on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
 .thumbs button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-.brand { font-size: 0.74rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dark); }
+.brand { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-dark); }
 h1 { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 400; margin: 0.4rem 0 0.2rem; }
 .code { color: var(--muted); font-size: 0.85rem; letter-spacing: 0.1em; }
 .price { font-family: var(--font-display); font-size: 2.6rem; font-weight: 500; margin: 1.4rem 0 0.2rem; }
 .stock { color: #2f6b45; font-size: 0.88rem; margin-bottom: 1.4rem; }
 .stock--out { color: var(--danger); }
 .desc { color: #4a463f; line-height: 1.8; margin: 0 0 1.8rem; max-width: 52ch; }
-.buy { width: 100%; max-width: 380px; text-align: center; background: var(--ink); border-color: var(--ink); color: #fff; }
+.buy { width: 100%; max-width: 380px; padding-top: 1.1rem; padding-bottom: 1.1rem; text-align: center; background: var(--ink); border-color: var(--ink); color: #fff; }
 .buy:disabled { opacity: 0.55; cursor: not-allowed; }
 .buy:not(:disabled):hover { background: #2a2a2e; }
+.buy--done, .buy--done:not(:disabled):hover { background: #2f6b45 !important; border-color: #2f6b45 !important; }
+.crumbs, .gallery, .info { animation: rise 0.8s var(--ease) both; }
+.info { animation-delay: 120ms; }
+.mobilebar { display: none; }
 .cartnote { font-size: 0.86rem; color: var(--muted); margin: 0.7rem 0 1.8rem; min-height: 1.4em; }
 .cartnote a { color: var(--gold-dark); }
 .warn { color: var(--danger); }
@@ -48,6 +59,12 @@ h2 { font-size: 1.6rem; margin-bottom: 0.8rem; }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
 @media (max-width: 900px) {
+  .detail { padding-bottom: 6rem; }
+  .mobilebar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.8rem 1rem calc(0.8rem + env(safe-area-inset-bottom)); background: rgba(247, 244, 238, 0.96); backdrop-filter: blur(10px); border-top: 1px solid var(--line); box-shadow: 0 -12px 30px -22px rgba(12, 12, 13, 0.5); animation: rise 0.6s var(--ease) both; }
+  .mobilebar > div { display: flex; flex-direction: column; min-width: 0; }
+  .mb-name { font-size: 0.74rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mobilebar strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; line-height: 1.1; }
+  .buy-sticky { background: var(--ink); border-color: var(--ink); color: #fff; padding: 0.85rem 1.3rem; white-space: nowrap; }
   .layout, .loading { grid-template-columns: 1fr; gap: 2rem; }
   .gallery { position: static; }
   .trust { grid-template-columns: 1fr; }

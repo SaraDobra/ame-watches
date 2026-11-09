@@ -167,4 +167,19 @@ public class SeedDataTests
         Assert.Equal("Automatik", watch.Movement);
         Assert.Equal(3, await db.Context.ProductImages.CountAsync(i => i.ProductId == watch.Id));
     }
+
+    [Fact]
+    public async Task Catalog_ListItems_ExposeTheFirstAndSecondPhoto()
+    {
+        using var db = new TestDb();
+        await SeedData.ApplyAsync(db.Context);
+        var service = new AmeWatches.Api.Services.CatalogService(db.Context);
+
+        var items = (await service.GetProducts(new AmeWatches.Api.Models.Catalog.ProductQuery { PageSize = 48 })).Items;
+
+        var automatic = items.Single(i => i.ModelCode == "CMK-100TC-1A");
+        Assert.EndsWith("casio-cmk-100tc-1a-1.png", automatic.ImageUrl);
+        Assert.EndsWith("casio-cmk-100tc-1a-2.jpg", automatic.SecondImageUrl);
+        Assert.Null(items.Single(i => i.ModelCode == "QQ-RECT-WHITE").SecondImageUrl);
+    }
 }

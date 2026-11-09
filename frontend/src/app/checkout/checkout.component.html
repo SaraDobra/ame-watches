@@ -18,48 +18,51 @@
       <div class="fields">
         <h2>Të dhënat e dërgesës</h2>
 
-        <div class="field" [class.field--bad]="invalid('customerName')">
+        <div class="float" [class.float--bad]="invalid('customerName')">
+          <input id="customerName" formControlName="customerName" placeholder=" " autocomplete="name">
           <label for="customerName">Emri dhe mbiemri</label>
-          <input id="customerName" formControlName="customerName" autocomplete="name">
           @if (invalid('customerName')) { <small>Shkruani emrin e plotë (të paktën 3 shkronja).</small> }
         </div>
 
         <div class="row">
-          <div class="field" [class.field--bad]="invalid('phone')">
+          <div class="float" [class.float--bad]="invalid('phone')">
+            <input id="phone" formControlName="phone" type="tel" placeholder=" " autocomplete="tel">
             <label for="phone">Telefoni</label>
-            <input id="phone" formControlName="phone" type="tel" autocomplete="tel" placeholder="+383 44 123 456">
             @if (invalid('phone')) { <small>Shkruani një numër telefoni të vlefshëm.</small> }
           </div>
-          <div class="field" [class.field--bad]="invalid('email')">
-            <label for="email">Email <span>(opsionale)</span></label>
-            <input id="email" formControlName="email" type="email" autocomplete="email">
-            @if (invalid('email')) { <small>Email-i nuk është i vlefshëm.</small> }
+          <div class="float" [class.float--bad]="invalid('email')">
+            <input id="email" formControlName="email" type="email" placeholder=" " autocomplete="email">
+            <label for="email">Email</label>
+            @if (invalid('email')) { <small>Shkruani një email të vlefshëm.</small> }
           </div>
         </div>
+        <p class="hint">Në email do t'ju dërgojmë konfirmimin e porosisë.</p>
 
         <div class="row">
-          <div class="field" [class.field--bad]="invalid('city')">
+          <div class="float" [class.float--bad]="invalid('city')">
+            <input id="city" formControlName="city" placeholder=" " autocomplete="address-level2">
             <label for="city">Qyteti</label>
-            <input id="city" formControlName="city" autocomplete="address-level2">
             @if (invalid('city')) { <small>Shkruani qytetin.</small> }
           </div>
-          <div class="field field--wide" [class.field--bad]="invalid('address')">
+          <div class="float float--wide" [class.float--bad]="invalid('address')">
+            <input id="address" formControlName="address" placeholder=" " autocomplete="street-address">
             <label for="address">Adresa</label>
-            <input id="address" formControlName="address" autocomplete="street-address">
             @if (invalid('address')) { <small>Shkruani adresën e plotë.</small> }
           </div>
         </div>
 
         <h2>Mënyra e pagesës</h2>
         <div class="pay">
-          <label class="option option--on">
+          <label class="option" [class.option--selected]="form.controls.paymentMethod.value === 'CashOnDelivery'">
             <input type="radio" formControlName="paymentMethod" value="CashOnDelivery">
             <span><strong>Pagesë në dorëzim</strong><small>Paguani kur ta merrni orën.</small></span>
           </label>
-          <label class="option option--off">
-            <input type="radio" disabled>
-            <span><strong>Me kartë</strong><small>Së shpejti.</small></span>
-          </label>
+          @if (cardEnabled()) {
+            <label class="option" [class.option--selected]="form.controls.paymentMethod.value === 'Card'">
+              <input type="radio" formControlName="paymentMethod" value="Card">
+              <span><strong>Me kartë</strong><small>Do të ridrejtoheni te faqja e sigurt e pagesës. Porosia ruhet për 30 minuta.</small></span>
+            </label>
+          }
         </div>
 
         @if (errors().length) {
@@ -85,8 +88,9 @@
           <div class="total"><dt>Totali</dt><dd>{{ cart.subtotal() | number: '1.0-2' }} €</dd></div>
         </dl>
         <button type="submit" class="btn btn--gold submit" [disabled]="submitting()">
-          {{ submitting() ? 'Duke dërguar...' : 'Konfirmo porosinë' }}
+          {{ submitting() ? 'Duke dërguar...' : (form.controls.paymentMethod.value === 'Card' ? 'Vazhdo te pagesa' : 'Konfirmo porosinë') }}
         </button>
+        <p class="legal">Duke konfirmuar pranoni <a routerLink="/kushtet">Kushtet</a> dhe <a routerLink="/privatesia">Politikën e privatësisë</a>.</p>
         <p class="legal">Çmimi përfundimtar llogaritet nga ne në momentin e porosisë. <a routerLink="/shporta">Ndrysho shportën</a></p>
       </aside>
     </form>

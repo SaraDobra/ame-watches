@@ -3,6 +3,8 @@ using System.Text;
 using AmeWatches.Api.Data;
 using AmeWatches.Api.Data.Entities;
 using AmeWatches.Api.Models.Orders;
+using AmeWatches.Api.Services.Email;
+using AmeWatches.Api.Services.Payments;
 using Microsoft.EntityFrameworkCore;
 
 namespace AmeWatches.Api.Services;
@@ -15,11 +17,21 @@ public class OrderService : IOrderService
     private const string OrderNoAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
     private readonly AppDbContext _db;
-    public OrderService(AppDbContext db) => _db = db;
+    private readonly IPaymentService _payments;
+    private readonly IOrderNotifier _notifier;
+    private readonly ILogger<OrderService> _logger;
+
+    public OrderService(AppDbContext db, IPaymentService payments, IOrderNotifier notifier, ILogger<OrderService> logger)
+    {
+        _db = db;
+        _payments = payments;
+        _notifier = notifier;
+        _logger = logger;
+    }
 
     public async Task<CreateOrderResult> CreateOrder(CreateOrderRequest request)
     {
-        if (request.PaymentMethod != PaymentMethod.CashOnDelivery)
+        if (request.PaymentMethod == PaymentMethod.Card && !_payments.CardPaymentsEnabled)
             return CreateOrderResult.Fail(OrderFailure.PaymentUnavailable, "Pagesa me kartë nuk është ende e disponueshme. Zgjidhni pagesën në dorëzim.");
 
         var lines = request.Items
@@ -92,7 +104,25 @@ public class OrderService : IOrderService
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        return CreateOrderResult.Ok(new OrderCreatedResponse(order.OrderNo, order.AccessToken, order.Total));
+        string? paymentUrl = null;
+        if (order.PaymentMethod == PaymentMethod.Card)
+        {
+            try
+            {
+                paymentUrl = (await _payments.StartCardPayment(order)).RedirectUrl;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Nisja e pagesës me kartë dështoi për porosinë {Order}.", order.OrderNo);
+                await _payments.CancelAndRestock(order.Id);
+                return CreateOrderResult.Fail(OrderFailure.PaymentUnavailable, "Pagesa me kartë nuk mund të nisë tani. Provoni përsëri ose zgjidhni pagesën në dorëzim.");
+            }
+        }
+
+        if (order.PaymentMethod == PaymentMethod.CashOnDelivery)
+            _notifier.OrderConfirmed(order);
+
+        return CreateOrderResult.Ok(new OrderCreatedResponse(order.OrderNo, order.AccessToken, order.Total, paymentUrl));
     }
 
     public async Task<OrderResponse?> GetOrder(string orderNo, string token)
@@ -121,6 +151,7 @@ public class OrderService : IOrderService
             order.Shipping,
             order.Total,
             order.CreatedAt,
+            order.PaidAt,
             order.Items.Select(i => new OrderLineResponse(i.ProductId, i.ProductName, i.ModelCode, i.UnitPrice, i.Quantity, i.UnitPrice * i.Quantity)).ToList());
     }
 

@@ -7,3 +7,6 @@ node_modules/
 dist/
 .angular/
 .DS_Store
+
+src/AmeWatches.Api/uploads/
+src/AmeWatches.Api/emails/

@@ -206,4 +206,76 @@ public class CatalogServiceTests
 
         Assert.Equal(0, result.TotalCount);
     }
+
+    [Fact]
+    public async Task PriceRange_ReturnsTheLowestAndHighestActivePrice()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+
+        var range = await service.GetPriceRange();
+
+        Assert.Equal(52m, range.Min);
+        Assert.Equal(189m, range.Max);
+    }
+
+    [Fact]
+    public async Task PriceRange_IgnoresHiddenWatches_AndIsZeroForAnEmptyShop()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+        var priciest = await db.Context.Products.OrderByDescending(p => p.Price).FirstAsync();
+        priciest.IsActive = false;
+        await db.Context.SaveChangesAsync();
+
+        Assert.Equal(145m, (await service.GetPriceRange()).Max);
+
+        foreach (var product in await db.Context.Products.ToListAsync()) product.IsActive = false;
+        await db.Context.SaveChangesAsync();
+
+        Assert.Equal(new PriceRange(0, 0), await service.GetPriceRange());
+    }
+
+    [Fact]
+    public async Task Suggest_FindsByNameCodeAndBrand_AsSoonAsOneLetterIsTyped()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+
+        var byLetter = await service.Suggest("e");
+        var byCode = await service.Suggest("efr");
+        var byBrand = await service.Suggest("q&q");
+
+        Assert.NotEmpty(byLetter);
+        Assert.Equal("EFR-556D-1AV", Assert.Single(byCode).ModelCode);
+        Assert.Equal(6, byBrand.Count);
+        Assert.All(byBrand, s => Assert.Equal("Q&Q", s.Brand));
+    }
+
+    [Fact]
+    public async Task Suggest_PutsThoseThatStartWithTheLettersFirst_AndRespectsTheLimit()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+
+        var results = await service.Suggest("s", limit: 3);
+
+        Assert.Equal(3, results.Count);
+        Assert.StartsWith("S", results[0].Name, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task Suggest_SkipsHiddenWatches_BlankInput_AndWildcards()
+    {
+        var (db, service) = await Setup();
+        using var _ = db;
+        var hidden = await db.Context.Products.FirstAsync(p => p.ModelCode == "EFR-556D-1AV");
+        hidden.IsActive = false;
+        await db.Context.SaveChangesAsync();
+
+        Assert.Empty(await service.Suggest("efr"));
+        Assert.Empty(await service.Suggest("   "));
+        Assert.Empty(await service.Suggest("%"));
+        Assert.Empty(await service.Suggest("_"));
+    }
 }

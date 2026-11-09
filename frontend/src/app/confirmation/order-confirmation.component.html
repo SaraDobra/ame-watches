@@ -8,10 +8,41 @@
       <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
     </div>
   } @else {
-    <div class="done">
-      <span class="check" aria-hidden="true">✓</span>
-      <h1>Faleminderit, {{ order()!.customerName }}</h1>
-      <p class="lead">Porosia juaj u regjistrua. Do t'ju kontaktojmë në <strong>{{ order()!.phone }}</strong> për ta konfirmuar dërgesën.</p>
+    <div class="done" [class.done--bad]="state(order()!) === 'failed'">
+      @switch (state(order()!)) {
+        @case ('paid') {
+          <span class="check" aria-hidden="true">✓</span>
+          <h1>Faleminderit, {{ order()!.customerName }}</h1>
+          <p class="lead">Pagesa juaj u pranua dhe porosia u konfirmua. Do t'ju kontaktojmë në <strong>{{ order()!.phone }}</strong> për dërgesën.</p>
+          @if (order()!.email) { <p class="mail">Një konfirmim po dërgohet te <strong>{{ order()!.email }}</strong>.</p> }
+        }
+        @case ('pending') {
+          <span class="check check--wait" aria-hidden="true">…</span>
+          <h1>Po presim konfirmimin e pagesës</h1>
+          @if (gaveUp()) {
+            <p class="lead">Konfirmimi po vonon. Nëse e keni përfunduar pagesën, porosia do të konfirmohet brenda pak minutash. Nëse jo, porosia anulohet vetë pas 30 minutash.</p>
+          } @else {
+            <p class="lead" role="status">Mos e mbyllni këtë faqe. Po kontrollojmë rezultatin e pagesës.</p>
+          }
+        }
+        @case ('failed') {
+          <span class="check check--bad" aria-hidden="true">×</span>
+          <h1>Pagesa nuk u krye</h1>
+          <p class="lead">Porosia u anulua dhe nuk u tarifua asgjë. Mund të provoni përsëri ose të zgjidhni pagesën në dorëzim.</p>
+          <a routerLink="/ora" class="btn btn--dark retry">Kthehu te koleksioni</a>
+        }
+        @case ('refund') {
+          <span class="check check--bad" aria-hidden="true">!</span>
+          <h1>Pagesa u pranua, por porosia nuk mund të përfundojë</h1>
+          <p class="lead">Pagesa juaj arriti pasi koha e porosisë kishte skaduar dhe ora u shit. Do t'jua kthejmë paratë. Na kontaktoni në Instagram <strong>&#64;ame.watches.ks</strong> me numrin e porosisë.</p>
+        }
+        @default {
+          <span class="check" aria-hidden="true">✓</span>
+          <h1>Faleminderit, {{ order()!.customerName }}</h1>
+          <p class="lead">Porosia juaj u regjistrua. Do t'ju kontaktojmë në <strong>{{ order()!.phone }}</strong> për ta konfirmuar dërgesën.</p>
+          @if (order()!.email) { <p class="mail">Një konfirmim po dërgohet te <strong>{{ order()!.email }}</strong>.</p> }
+        }
+      }
       <p class="no">Numri i porosisë <strong>{{ order()!.orderNo }}</strong></p>
     </div>
 
@@ -44,6 +75,8 @@
     </div>
 
     <p class="keep">Ruani këtë lidhje për ta parë porosinë më vonë. Garancia 1 vit nga amé watches vlen për çdo orë.</p>
-    <a routerLink="/ora" class="btn btn--dark">Vazhdo me blerjet</a>
+    @if (state(order()!) !== 'failed' && state(order()!) !== 'refund') {
+      <a routerLink="/ora" class="btn btn--dark">Vazhdo me blerjet</a>
+    }
   }
 </section>
