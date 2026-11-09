@@ -17,6 +17,7 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'produktet', loadComponent: () => import('./products/admin-products.component').then(m => m.AdminProductsComponent) },
       { path: 'produktet/new', loadComponent: () => import('./products/admin-product-form.component').then(m => m.AdminProductFormComponent) },
       { path: 'produktet/:id', loadComponent: () => import('./products/admin-product-form.component').then(m => m.AdminProductFormComponent) },
+      { path: 'kategorite', loadComponent: () => import('./categories/admin-categories.component').then(m => m.AdminCategoriesComponent) },
       { path: '**', redirectTo: '' }
     ]
   }

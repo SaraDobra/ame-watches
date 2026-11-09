@@ -39,6 +39,9 @@
       <a routerLink="/">Ballina</a><span>/</span>
       <a routerLink="/ora">Koleksioni</a><span>/</span>
       <a routerLink="/ora" [queryParams]="{ brand: product()!.brandSlug }">{{ product()!.brand }}</a><span>/</span>
+      @if (product()!.category) {
+        <a routerLink="/ora" [queryParams]="{ brand: product()!.brandSlug, category: product()!.categorySlug }">{{ product()!.category }}</a><span>/</span>
+      }
       <span>{{ product()!.name }}</span>
     </nav>
 

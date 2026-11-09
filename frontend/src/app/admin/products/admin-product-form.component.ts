@@ -3,12 +3,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminApiService } from '../admin-api.service';
-import { AdminProductDetail, ProductInput } from '../admin.models';
+import { AdminCategory, AdminProductDetail, ProductInput } from '../admin.models';
 import { CatalogService } from '../../services/catalog.service';
 import { Brand } from '../../models/catalog.models';
 import { ImgPipe } from '../../pipes/img.pipe';
 
-const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_IMAGES = 8;
 
@@ -31,6 +31,7 @@ export class AdminProductFormComponent {
 
   product = signal<AdminProductDetail | null>(null);
   brands = signal<Brand[]>([]);
+  categories = signal<AdminCategory[]>([]);
   loading = signal(this.id !== null);
   saving = signal(false);
   errors = signal<string[]>([]);
@@ -45,6 +46,7 @@ export class AdminProductFormComponent {
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
     modelCode: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
     brandId: [0, [Validators.min(1)]],
+    categoryId: [null as number | null],
     price: [0, [Validators.required, Validators.min(0.01), Validators.max(100000)]],
     stock: [0, [Validators.required, Validators.min(0), Validators.max(100000)]],
     gender: ['Women'],
@@ -58,6 +60,15 @@ export class AdminProductFormComponent {
 
   constructor() {
     afterNextRender(() => {
+      this.api.categories().subscribe({ next: list => this.categories.set(list), error: () => this.categories.set([]) });
+
+      this.form.controls.brandId.valueChanges.subscribe(() => {
+        const current = this.form.controls.categoryId.value;
+        if (current !== null && !this.categoryOptions().some(c => c.id === Number(current))) {
+          this.form.controls.categoryId.setValue(null);
+        }
+      });
+
       this.catalog.getBrands().subscribe(brands => {
         this.brands.set(brands);
         if (this.id === null && brands.length > 0 && this.form.controls.brandId.value === 0) {
@@ -72,6 +83,11 @@ export class AdminProductFormComponent {
         });
       }
     });
+  }
+
+  categoryOptions(): AdminCategory[] {
+    const brandId = Number(this.form.controls.brandId.value);
+    return this.categories().filter(c => c.brandId === brandId);
   }
 
   bad(name: keyof typeof this.form.controls): boolean {
@@ -93,6 +109,7 @@ export class AdminProductFormComponent {
     const input: ProductInput = {
       ...value,
       brandId: Number(value.brandId),
+      categoryId: value.categoryId === null || (value.categoryId as unknown) === '' ? null : Number(value.categoryId),
       price: Number(value.price),
       stock: Number(value.stock),
       caseSizeMm: value.caseSizeMm === null || (value.caseSizeMm as unknown) === '' ? null : Number(value.caseSizeMm),
@@ -139,7 +156,7 @@ export class AdminProductFormComponent {
     this.imageError.set('');
     const bad = files.find(file => !TYPES.includes(file.type) || file.size > MAX_BYTES);
     if (bad) {
-      this.imageError.set(`"${bad.name}" duhet të jetë JPG, PNG ose WebP deri në 5 MB.`);
+      this.imageError.set(`"${bad.name}" duhet të jetë JPG, PNG, WebP ose AVIF deri në 5 MB.`);
       return;
     }
     if (product.images.length + files.length > MAX_IMAGES) {
@@ -201,6 +218,7 @@ export class AdminProductFormComponent {
       name: product.name,
       modelCode: product.modelCode,
       brandId: product.brandId,
+      categoryId: product.categoryId ?? null,
       price: product.price,
       stock: product.stock,
       gender: product.gender,

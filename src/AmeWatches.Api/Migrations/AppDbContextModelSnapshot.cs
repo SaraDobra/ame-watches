@@ -120,6 +120,38 @@ namespace AmeWatches.Api.Migrations
                     b.ToTable("Brands");
                 });
 
+            modelBuilder.Entity("AmeWatches.Api.Data.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.HasIndex("BrandId", "Name")
+                        .IsUnique();
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("AmeWatches.Api.Data.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -266,6 +298,9 @@ namespace AmeWatches.Api.Migrations
                     b.Property<int?>("CaseSizeMm")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -317,6 +352,8 @@ namespace AmeWatches.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("ModelCode")
                         .IsUnique();
@@ -488,6 +525,17 @@ namespace AmeWatches.Api.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AmeWatches.Api.Data.Entities.Category", b =>
+                {
+                    b.HasOne("AmeWatches.Api.Data.Entities.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+                });
+
             modelBuilder.Entity("AmeWatches.Api.Data.Entities.OrderItem", b =>
                 {
                     b.HasOne("AmeWatches.Api.Data.Entities.Order", "Order")
@@ -515,7 +563,14 @@ namespace AmeWatches.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("AmeWatches.Api.Data.Entities.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Brand");
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("AmeWatches.Api.Data.Entities.ProductImage", b =>
@@ -581,6 +636,11 @@ namespace AmeWatches.Api.Migrations
                 });
 
             modelBuilder.Entity("AmeWatches.Api.Data.Entities.Brand", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("AmeWatches.Api.Data.Entities.Category", b =>
                 {
                     b.Navigation("Products");
                 });

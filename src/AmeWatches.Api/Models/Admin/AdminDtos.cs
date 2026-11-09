@@ -15,8 +15,17 @@ public record ProductInput(
     [Range(10, 100)] int? CaseSizeMm,
     [Range(0, 1000)] int? WaterResistanceM,
     [StringLength(50)] string? Movement,
-    bool IsActive
+    bool IsActive,
+    int? CategoryId = null
 );
+
+public record CategoryInput(
+    [Required, StringLength(100, MinimumLength = 2)] string Name,
+    [Range(1, int.MaxValue)] int BrandId);
+
+public record RenameCategoryRequest([Required, StringLength(100, MinimumLength = 2)] string Name);
+
+public record AdminCategory(int Id, string Name, string Slug, int BrandId, string Brand, int ProductCount);
 
 public record SetActiveRequest(bool IsActive);
 
@@ -56,13 +65,13 @@ public record AdminImage(int Id, string Url, int SortOrder);
 
 public record AdminProductListItem(
     int Id, string Name, string Slug, string ModelCode, string Brand,
-    decimal Price, int Stock, bool IsActive, string? ImageUrl);
+    decimal Price, int Stock, bool IsActive, string? ImageUrl, string? Category = null);
 
 public record AdminProductDetail(
     int Id, string Name, string Slug, string ModelCode, int BrandId, string Brand,
     string? Description, decimal Price, int Stock,
     string Gender, string Type, int? CaseSizeMm, int? WaterResistanceM, string? Movement,
-    bool IsActive, IReadOnlyList<AdminImage> Images);
+    bool IsActive, IReadOnlyList<AdminImage> Images, int? CategoryId = null, string? Category = null);
 
 public record AdminOrderListItem(
     string OrderNo, string CustomerName, string Phone, decimal Total,

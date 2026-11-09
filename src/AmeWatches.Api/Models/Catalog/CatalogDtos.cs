@@ -14,6 +14,7 @@ public enum ProductSort
 public class ProductQuery
 {
     public string? Brand { get; set; }
+    public string? Category { get; set; }
 
     [Range(0, 100000)]
     public decimal? MinPrice { get; set; }
@@ -38,6 +39,8 @@ public class ProductQuery
 
 public record BrandResponse(int Id, string Name, string Slug, int ProductCount);
 
+public record CategoryResponse(int Id, string Name, string Slug, string BrandSlug, int ProductCount);
+
 public record ProductListItem(
     int Id,
     string Name,
@@ -50,7 +53,9 @@ public record ProductListItem(
     string Gender,
     string Type,
     string? ImageUrl,
-    string? SecondImageUrl
+    string? SecondImageUrl,
+    string? Category = null,
+    string? CategorySlug = null
 );
 
 public record ProductDetail(
@@ -69,7 +74,9 @@ public record ProductDetail(
     int? CaseSizeMm,
     int? WaterResistanceM,
     string? Movement,
-    IReadOnlyList<string> Images
+    IReadOnlyList<string> Images,
+    string? Category = null,
+    string? CategorySlug = null
 );
 
 public record PagedResult<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

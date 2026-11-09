@@ -5,7 +5,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { SeoService } from '../services/seo.service';
 import { catchError, of, switchMap, tap } from 'rxjs';
 import { CatalogService } from '../services/catalog.service';
-import { Brand, PagedResult, PriceRange, ProductFilter, ProductListItem } from '../models/catalog.models';
+import { Brand, Category, PagedResult, PriceRange, ProductFilter, ProductListItem } from '../models/catalog.models';
 import { ProductCardComponent } from '../shared/product-card.component';
 import { SearchBoxComponent } from '../shared/search-box.component';
 import { PriceRangeComponent } from '../shared/price-range.component';
@@ -42,6 +42,7 @@ export class CatalogComponent implements OnInit {
   readonly genders = GENDERS;
 
   brands = signal<Brand[]>([]);
+  categories = signal<Category[]>([]);
   bounds = signal<PriceRange | null>(null);
   result = signal<PagedResult<ProductListItem> | null>(null);
   filter = signal<ProductFilter>({});
@@ -56,6 +57,9 @@ export class CatalogComponent implements OnInit {
 
     this.catalog.getBrands().pipe(catchError(() => of([] as Brand[])), takeUntilDestroyed(this.destroyRef))
       .subscribe(brands => this.brands.set(brands));
+
+    this.catalog.getCategories().pipe(catchError(() => of([] as Category[])), takeUntilDestroyed(this.destroyRef))
+      .subscribe(list => this.categories.set(list));
 
     this.catalog.getPriceRange().pipe(catchError(() => of(null)), takeUntilDestroyed(this.destroyRef))
       .subscribe(range => this.bounds.set(range));
@@ -76,12 +80,17 @@ export class CatalogComponent implements OnInit {
     });
   }
 
-  setFilter(changes: Partial<Record<'brand' | 'gender' | 'sort' | 'minPrice' | 'maxPrice' | 'search', string | number | null>>): void {
+  setFilter(changes: Partial<Record<'brand' | 'category' | 'gender' | 'sort' | 'minPrice' | 'maxPrice' | 'search', string | number | null>>): void {
     const queryParams: Record<string, string | number | null> = { page: null };
     for (const [key, value] of Object.entries(changes)) {
       queryParams[key] = value === '' || value === undefined ? null : value;
     }
     this.router.navigate([], { queryParams, queryParamsHandling: 'merge' });
+  }
+
+  visibleCategories(): Category[] {
+    const brand = this.filter().brand;
+    return this.categories().filter(c => !brand || c.brandSlug === brand);
   }
 
   setPrice(range: { from: number | null; to: number | null }): void {
@@ -101,7 +110,7 @@ export class CatalogComponent implements OnInit {
 
   hasFilters(): boolean {
     const f = this.filter();
-    return !!(f.brand || f.gender || f.minPrice !== undefined || f.maxPrice !== undefined || f.search);
+    return !!(f.brand || f.category || f.gender || f.minPrice !== undefined || f.maxPrice !== undefined || f.search);
   }
 
   pages(): number[] {
@@ -126,6 +135,7 @@ export class CatalogComponent implements OnInit {
 
     return {
       brand: params.get('brand') ?? undefined,
+      category: params.get('category') ?? undefined,
       gender: gender === 'Men' || gender === 'Women' || gender === 'Unisex' ? gender : undefined,
       minPrice: number('minPrice'),
       maxPrice: number('maxPrice'),

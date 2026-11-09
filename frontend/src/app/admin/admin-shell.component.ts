@@ -17,6 +17,7 @@ import { AdminAuthService } from './admin-auth.service';
           <a routerLink="/admin" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }">Paneli</a>
           <a routerLink="/admin/porosite" routerLinkActive="on">Porositë</a>
           <a routerLink="/admin/produktet" routerLinkActive="on">Produktet</a>
+          <a routerLink="/admin/kategorite" routerLinkActive="on">Kategoritë</a>
         </nav>
         <div class="who">
           <span class="name">{{ auth.session()?.fullName }}</span>

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
-  AdminOrderDetail, AdminOrderListItem, AdminProductDetail, AdminProductListItem,
+  AdminCategory, AdminOrderDetail, AdminOrderListItem, AdminProductDetail, AdminProductListItem,
   DashboardSummary, Paged, ProductInput
 } from './admin.models';
 
@@ -54,6 +54,22 @@ export class AdminApiService {
 
   setActive(id: number, isActive: boolean): Observable<AdminProductDetail> {
     return this.http.patch<AdminProductDetail>(`${this.url}/products/${id}/active`, { isActive });
+  }
+
+  categories(): Observable<AdminCategory[]> {
+    return this.http.get<AdminCategory[]>(`${this.url}/categories`);
+  }
+
+  createCategory(name: string, brandId: number): Observable<AdminCategory> {
+    return this.http.post<AdminCategory>(`${this.url}/categories`, { name, brandId });
+  }
+
+  renameCategory(id: number, name: string): Observable<AdminCategory> {
+    return this.http.put<AdminCategory>(`${this.url}/categories/${id}`, { name });
+  }
+
+  deleteCategory(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/categories/${id}`);
   }
 
   deleteProduct(id: number): Observable<void> {

@@ -52,7 +52,8 @@ public class AdminProductService : IAdminProductService
             .Take(query.PageSize)
             .Select(p => new AdminProductListItem(
                 p.Id, p.Name, p.Slug, p.ModelCode, p.Brand.Name, p.Price, p.Stock, p.IsActive,
-                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault()))
+                p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault(),
+                p.Category != null ? p.Category.Name : null))
             .ToListAsync();
 
         return new PagedAdmin<AdminProductListItem>(items, query.Page, query.PageSize, total);
@@ -62,6 +63,7 @@ public class AdminProductService : IAdminProductService
     {
         var product = await _db.Products.AsNoTracking()
             .Include(p => p.Brand)
+            .Include(p => p.Category)
             .Include(p => p.Images)
             .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -73,6 +75,10 @@ public class AdminProductService : IAdminProductService
         var brand = await _db.Brands.AsNoTracking().FirstOrDefaultAsync(b => b.Id == input.BrandId);
         if (brand is null)
             return AdminResult<AdminProductDetail>.Invalid("Brendi nuk ekziston.");
+
+        var categoryError = await CheckCategory(input);
+        if (categoryError is not null)
+            return AdminResult<AdminProductDetail>.Invalid(categoryError);
 
         var code = input.ModelCode.Trim();
         if (await _db.Products.AnyAsync(p => p.ModelCode == code))
@@ -99,6 +105,10 @@ public class AdminProductService : IAdminProductService
 
         if (!await _db.Brands.AnyAsync(b => b.Id == input.BrandId))
             return AdminResult<AdminProductDetail>.Invalid("Brendi nuk ekziston.");
+
+        var categoryError = await CheckCategory(input);
+        if (categoryError is not null)
+            return AdminResult<AdminProductDetail>.Invalid(categoryError);
 
         var code = input.ModelCode.Trim();
         if (await _db.Products.AnyAsync(p => p.ModelCode == code && p.Id != id))
@@ -142,11 +152,24 @@ public class AdminProductService : IAdminProductService
         return AdminResult<int>.Ok(id);
     }
 
+    private async Task<string?> CheckCategory(ProductInput input)
+    {
+        if (input.CategoryId is not int categoryId)
+            return null;
+
+        var category = await _db.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
+        if (category is null)
+            return "Kategoria nuk ekziston.";
+
+        return category.BrandId == input.BrandId ? null : "Kategoria nuk i përket brendit të zgjedhur.";
+    }
+
     private static void Apply(Product product, ProductInput input, string code)
     {
         product.Name = input.Name.Trim();
         product.ModelCode = code;
         product.BrandId = input.BrandId;
+        product.CategoryId = input.CategoryId;
         product.Description = string.IsNullOrWhiteSpace(input.Description) ? null : input.Description.Trim();
         product.Price = input.Price;
         product.Stock = input.Stock;
@@ -170,7 +193,8 @@ public class AdminProductService : IAdminProductService
     private static AdminProductDetail ToDetail(Product p) => new(
         p.Id, p.Name, p.Slug, p.ModelCode, p.BrandId, p.Brand.Name, p.Description, p.Price, p.Stock,
         p.Gender.ToString(), p.Type.ToString(), p.CaseSizeMm, p.WaterResistanceM, p.Movement, p.IsActive,
-        p.Images.OrderBy(i => i.SortOrder).Select(i => new AdminImage(i.Id, i.Url, i.SortOrder)).ToList());
+        p.Images.OrderBy(i => i.SortOrder).Select(i => new AdminImage(i.Id, i.Url, i.SortOrder)).ToList(),
+        p.CategoryId, p.Category?.Name);
 
     private static string EscapeLike(string text)
         => text.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_").Replace("[", "\\[");

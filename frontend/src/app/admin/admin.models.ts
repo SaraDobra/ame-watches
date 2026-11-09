@@ -19,6 +19,15 @@ export interface AdminImage {
   sortOrder: number;
 }
 
+export interface AdminCategory {
+  id: number;
+  name: string;
+  slug: string;
+  brandId: number;
+  brand: string;
+  productCount: number;
+}
+
 export interface AdminProductListItem {
   id: number;
   name: string;
@@ -29,6 +38,7 @@ export interface AdminProductListItem {
   stock: number;
   isActive: boolean;
   imageUrl: string | null;
+  category?: string | null;
 }
 
 export interface AdminProductDetail {
@@ -48,6 +58,8 @@ export interface AdminProductDetail {
   movement: string | null;
   isActive: boolean;
   images: AdminImage[];
+  categoryId?: number | null;
+  category?: string | null;
 }
 
 export interface ProductInput {
@@ -63,6 +75,7 @@ export interface ProductInput {
   waterResistanceM: number | null;
   movement: string | null;
   isActive: boolean;
+  categoryId: number | null;
 }
 
 export interface AdminOrderListItem {

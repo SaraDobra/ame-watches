@@ -10,6 +10,9 @@ public class Product
     public int BrandId { get; set; }
     public Brand Brand { get; set; } = default!;
 
+    public int? CategoryId { get; set; }
+    public Category? Category { get; set; }
+
     public string? Description { get; set; }
     public decimal Price { get; set; }
     public int Stock { get; set; }
