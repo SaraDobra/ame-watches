@@ -13,6 +13,8 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         b.Property(x => x.ModelCode).IsRequired().HasMaxLength(50);
         b.Property(x => x.Description).HasMaxLength(2000);
         b.Property(x => x.Movement).HasMaxLength(50);
+        b.Property(x => x.CaseSizeMm).HasPrecision(5, 1);
+        b.Property(x => x.WaterResistance).HasMaxLength(50);
         b.Property(x => x.Price).HasColumnType("decimal(18,2)");
         b.Property(x => x.Gender).HasConversion<string>().HasMaxLength(20);
         b.Property(x => x.Type).HasConversion<string>().HasMaxLength(20);

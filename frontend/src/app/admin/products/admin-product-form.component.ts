@@ -52,7 +52,7 @@ export class AdminProductFormComponent {
     gender: ['Women'],
     type: ['Analog'],
     caseSizeMm: [null as number | null, [Validators.min(10), Validators.max(100)]],
-    waterResistanceM: [null as number | null, [Validators.min(0), Validators.max(1000)]],
+    waterResistance: ['', Validators.maxLength(50)],
     movement: ['', Validators.maxLength(50)],
     description: ['', Validators.maxLength(2000)],
     isActive: [true]
@@ -113,7 +113,7 @@ export class AdminProductFormComponent {
       price: Number(value.price),
       stock: Number(value.stock),
       caseSizeMm: value.caseSizeMm === null || (value.caseSizeMm as unknown) === '' ? null : Number(value.caseSizeMm),
-      waterResistanceM: value.waterResistanceM === null || (value.waterResistanceM as unknown) === '' ? null : Number(value.waterResistanceM),
+      waterResistance: value.waterResistance.trim() || null,
       movement: value.movement.trim() || null,
       description: value.description.trim() || null
     };
@@ -224,7 +224,7 @@ export class AdminProductFormComponent {
       gender: product.gender,
       type: product.type,
       caseSizeMm: product.caseSizeMm,
-      waterResistanceM: product.waterResistanceM,
+      waterResistance: product.waterResistance ?? '',
       movement: product.movement ?? '',
       description: product.description ?? '',
       isActive: product.isActive

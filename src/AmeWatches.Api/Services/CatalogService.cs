@@ -69,7 +69,7 @@ public class CatalogService : ICatalogService
                 p.Id, p.Name, p.Slug, p.ModelCode,
                 Brand = p.Brand.Name, BrandSlug = p.Brand.Slug,
                 p.Description, p.Price, p.Stock, p.Gender, p.Type,
-                p.CaseSizeMm, p.WaterResistanceM, p.Movement,
+                p.CaseSizeMm, p.WaterResistance, p.Movement,
                 Category = p.Category != null ? p.Category.Name : null,
                 CategorySlug = p.Category != null ? p.Category.Slug : null,
                 Images = p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).ToList()
@@ -83,7 +83,7 @@ public class CatalogService : ICatalogService
             product.Id, product.Name, product.Slug, product.ModelCode,
             product.Brand, product.BrandSlug, product.Description, product.Price,
             product.Stock, product.Stock > 0, product.Gender.ToString(), product.Type.ToString(),
-            product.CaseSizeMm, product.WaterResistanceM, product.Movement, product.Images,
+            product.CaseSizeMm, product.WaterResistance, product.Movement, product.Images,
             product.Category, product.CategorySlug);
     }
 

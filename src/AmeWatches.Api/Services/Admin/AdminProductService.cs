@@ -176,7 +176,7 @@ public class AdminProductService : IAdminProductService
         product.Gender = input.Gender;
         product.Type = input.Type;
         product.CaseSizeMm = input.CaseSizeMm;
-        product.WaterResistanceM = input.WaterResistanceM;
+        product.WaterResistance = string.IsNullOrWhiteSpace(input.WaterResistance) ? null : input.WaterResistance.Trim();
         product.Movement = string.IsNullOrWhiteSpace(input.Movement) ? null : input.Movement.Trim();
         product.IsActive = input.IsActive;
     }
@@ -192,7 +192,7 @@ public class AdminProductService : IAdminProductService
 
     private static AdminProductDetail ToDetail(Product p) => new(
         p.Id, p.Name, p.Slug, p.ModelCode, p.BrandId, p.Brand.Name, p.Description, p.Price, p.Stock,
-        p.Gender.ToString(), p.Type.ToString(), p.CaseSizeMm, p.WaterResistanceM, p.Movement, p.IsActive,
+        p.Gender.ToString(), p.Type.ToString(), p.CaseSizeMm, p.WaterResistance, p.Movement, p.IsActive,
         p.Images.OrderBy(i => i.SortOrder).Select(i => new AdminImage(i.Id, i.Url, i.SortOrder)).ToList(),
         p.CategoryId, p.Category?.Name);
 

@@ -295,8 +295,9 @@ namespace AmeWatches.Api.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CaseSizeMm")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("CaseSizeMm")
+                        .HasPrecision(5, 1)
+                        .HasColumnType("decimal(5,1)");
 
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
@@ -346,8 +347,9 @@ namespace AmeWatches.Api.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("WaterResistanceM")
-                        .HasColumnType("int");
+                    b.Property<string>("WaterResistance")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

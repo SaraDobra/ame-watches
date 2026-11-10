@@ -17,7 +17,7 @@ public class AdminProductServiceTests
     }
 
     private static ProductInput Input(int brandId, string name = "Prova Klasike", string code = "TEST-001", decimal price = 60m, int stock = 4, bool active = true)
-        => new(name, code, brandId, "Përshkrim i shkurtër", price, stock, WatchGender.Women, WatchType.Analog, 30, 50, "Kuarc", active);
+        => new(name, code, brandId, "Përshkrim i shkurtër", price, stock, WatchGender.Women, WatchType.Analog, 30, "50 m", "Kuarc", active);
 
     [Fact]
     public async Task Create_BuildsAUniqueReadableSlug()
@@ -140,7 +140,7 @@ public class AdminProductServiceTests
         var (db, service) = await Setup();
         using var _ = db;
         var brand = await db.Context.Brands.FirstAsync();
-        var input = Input(brand.Id) with { Description = "   ", Movement = "  ", CaseSizeMm = null, WaterResistanceM = null };
+        var input = Input(brand.Id) with { Description = "   ", Movement = "  ", CaseSizeMm = null, WaterResistance = null };
 
         var created = (await service.Create(input)).Value!;
 

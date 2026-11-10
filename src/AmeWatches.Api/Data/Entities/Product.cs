@@ -19,8 +19,8 @@ public class Product
 
     public WatchGender Gender { get; set; }
     public WatchType Type { get; set; }
-    public int? CaseSizeMm { get; set; }
-    public int? WaterResistanceM { get; set; }
+    public decimal? CaseSizeMm { get; set; }
+    public string? WaterResistance { get; set; }
     public string? Movement { get; set; }
 
     public bool IsActive { get; set; } = true;

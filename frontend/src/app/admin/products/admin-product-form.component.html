@@ -83,13 +83,14 @@
       <div class="grid2">
         <div class="adm-field" [class.adm-field--bad]="bad('caseSizeMm')">
           <label for="caseSizeMm">Diametri i kasës (mm) <small>(opsionale, vetëm nëse e dini)</small></label>
-          <input id="caseSizeMm" type="number" formControlName="caseSizeMm">
+          <input id="caseSizeMm" type="number" step="0.1" formControlName="caseSizeMm" placeholder="p.sh. 23.5">
           @if (bad('caseSizeMm')) { <small class="err">Midis 10 dhe 100 mm.</small> }
         </div>
-        <div class="adm-field" [class.adm-field--bad]="bad('waterResistanceM')">
-          <label for="waterResistanceM">Rezistenca ndaj ujit (m) <small>(opsionale)</small></label>
-          <input id="waterResistanceM" type="number" formControlName="waterResistanceM">
-          @if (bad('waterResistanceM')) { <small class="err">Midis 0 dhe 1000 m.</small> }
+        <div class="adm-field" [class.adm-field--bad]="bad('waterResistance')">
+          <label for="waterResistance">Rezistenca ndaj ujit <small>(opsionale)</small></label>
+          <input id="waterResistance" formControlName="waterResistance" list="waters" maxlength="50" placeholder="Water Resistant, 5 BAR, 100 m">
+          <datalist id="waters"><option value="Water Resistant"><option value="3 BAR"><option value="5 BAR"><option value="10 BAR"><option value="20 BAR"><option value="Jo rezistente ndaj ujit"></datalist>
+          @if (bad('waterResistance')) { <small class="err">Deri në 50 shkronja.</small> }
         </div>
       </div>
 

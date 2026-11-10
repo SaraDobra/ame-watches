@@ -28,7 +28,7 @@ public static class CatalogFixture
                 Gender = gender,
                 Type = type,
                 CaseSizeMm = caseMm,
-                WaterResistanceM = waterM,
+                WaterResistance = waterM is int water ? $"{water} m" : null,
                 Movement = movement,
                 Description = description,
                 IsActive = true,
