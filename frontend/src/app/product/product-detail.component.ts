@@ -81,7 +81,7 @@ export class ProductDetailComponent {
     ];
     if (p.movement) specs.push({ label: 'Mekanizmi', value: p.movement });
     if (p.caseSizeMm) specs.push({ label: 'Diametri i kasës', value: `${p.caseSizeMm} mm` });
-    if (p.waterResistanceM) specs.push({ label: 'Rezistenca ndaj ujit', value: `${p.waterResistanceM} m` });
+    if (p.waterResistance) specs.push({ label: 'Rezistenca ndaj ujit', value: p.waterResistance });
     return specs;
   }
 

@@ -54,7 +54,7 @@ export interface AdminProductDetail {
   gender: string;
   type: string;
   caseSizeMm: number | null;
-  waterResistanceM: number | null;
+  waterResistance: string | null;
   movement: string | null;
   isActive: boolean;
   images: AdminImage[];
@@ -72,7 +72,7 @@ export interface ProductInput {
   gender: string;
   type: string;
   caseSizeMm: number | null;
-  waterResistanceM: number | null;
+  waterResistance: string | null;
   movement: string | null;
   isActive: boolean;
   categoryId: number | null;

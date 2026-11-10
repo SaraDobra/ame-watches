@@ -65,7 +65,7 @@ export interface ProductDetail {
   gender: string;
   type: string;
   caseSizeMm: number | null;
-  waterResistanceM: number | null;
+  waterResistance: string | null;
   movement: string | null;
   images: string[];
   category?: string | null;

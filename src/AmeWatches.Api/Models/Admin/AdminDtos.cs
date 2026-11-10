@@ -12,8 +12,8 @@ public record ProductInput(
     [Range(0, 100000)] int Stock,
     [EnumDataType(typeof(WatchGender))] WatchGender Gender,
     [EnumDataType(typeof(WatchType))] WatchType Type,
-    [Range(10, 100)] int? CaseSizeMm,
-    [Range(0, 1000)] int? WaterResistanceM,
+    [Range(typeof(decimal), "10", "100")] decimal? CaseSizeMm,
+    [StringLength(50)] string? WaterResistance,
     [StringLength(50)] string? Movement,
     bool IsActive,
     int? CategoryId = null
@@ -70,7 +70,7 @@ public record AdminProductListItem(
 public record AdminProductDetail(
     int Id, string Name, string Slug, string ModelCode, int BrandId, string Brand,
     string? Description, decimal Price, int Stock,
-    string Gender, string Type, int? CaseSizeMm, int? WaterResistanceM, string? Movement,
+    string Gender, string Type, decimal? CaseSizeMm, string? WaterResistance, string? Movement,
     bool IsActive, IReadOnlyList<AdminImage> Images, int? CategoryId = null, string? Category = null);
 
 public record AdminOrderListItem(

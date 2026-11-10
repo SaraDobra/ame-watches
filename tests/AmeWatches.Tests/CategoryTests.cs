@@ -19,7 +19,7 @@ public class CategoryTests
     }
 
     private static ProductInput Input(int brandId, int? categoryId, string code = "CAT-001")
-        => new("Prova", code, brandId, null, 60m, 3, WatchGender.Men, WatchType.Analog, 40, 50, "Kuarc", true, categoryId);
+        => new("Prova", code, brandId, null, 60m, 3, WatchGender.Men, WatchType.Analog, 40, "50 m", "Kuarc", true, categoryId);
 
     [Fact]
     public async Task Create_BuildsASlug_AndRefusesADuplicateNameInTheSameBrand()

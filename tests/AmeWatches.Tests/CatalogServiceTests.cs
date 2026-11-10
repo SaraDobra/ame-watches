@@ -166,7 +166,7 @@ public class CatalogServiceTests
         Assert.NotNull(detail);
         Assert.Equal("Casio", detail.Brand);
         Assert.Equal(44, detail.CaseSizeMm);
-        Assert.Equal(100, detail.WaterResistanceM);
+        Assert.Equal("100 m", detail.WaterResistance);
         Assert.True(detail.InStock);
     }
 
