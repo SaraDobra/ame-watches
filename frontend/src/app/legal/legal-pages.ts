@@ -71,7 +71,7 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
     updated: '5 nëntor 2026',
     sections: [
       { h: 'Dërgesa falas', p: ['Dërgesa është falas për çdo porosi. Orët i dërgojmë brenda Kosovës, në adresën që shkruani gjatë porosisë.'] },
-      { h: 'Afati', p: ['Pasi ta pranojmë porosinë, ju kontaktojmë në telefon ose email për ta konfirmuar kohën e dorëzimit.'] },
+      { h: 'Afati', p: ['Orët i dërgojmë me postë brenda 1–2 ditësh pune pasi ta konfirmojmë porosinë. Ju kontaktojmë në telefon ose email për ta konfirmuar.'] },
       { h: 'Gjatë marrjes', p: ['Kontrolloni paketën kur e merrni. Nëse është dëmtuar ose nuk përputhet me porosinë, na njoftoni menjëherë në ' + CONTACT + '.'] },
       {
         h: 'Mënyrat e pagesës',

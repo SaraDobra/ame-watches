@@ -145,7 +145,9 @@ export class ProductDetailComponent {
     this.meta.updateTag({ property: 'og:description', content: description });
     this.seo.setCanonical(`/ora/${product.slug}`);
     const origin = this.document.location?.origin ?? '';
-    const first = imageSrc(product.images[0]);
+    // Rrjetet sociale shfaqin besueshëm vetëm JPG/PNG; për WebP/AVIF mbetet foto e përgjithshme e ame.
+    const shareable = product.images.find(url => /\.(jpe?g|png)$/i.test(url));
+    const first = shareable ? imageSrc(shareable) : '';
     this.seo.setImage(first ? (first.startsWith('http') ? first : origin + first) : null);
 
     const existing = this.document.getElementById('product-jsonld');
