@@ -1,0 +1,10 @@
+[Unit]
+Description=Kontrolli i shëndetit çdo 2 minuta
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+AccuracySec=15s
+
+[Install]
+WantedBy=timers.target

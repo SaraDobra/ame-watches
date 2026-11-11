@@ -1,0 +1,8 @@
+[Unit]
+Description=ame watches backup (databaza dhe fotot)
+After=docker.service
+
+[Service]
+Type=oneshot
+User=ame
+ExecStart=/opt/ame/deploy/backup.sh

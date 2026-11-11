@@ -1,0 +1,10 @@
+[Unit]
+Description=Backup i natës për ame watches
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target
