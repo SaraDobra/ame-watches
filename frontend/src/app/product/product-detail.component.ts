@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { DOCUMENT, DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { SeoService } from '../services/seo.service';
 import { catchError, of, switchMap, tap } from 'rxjs';
@@ -37,6 +37,7 @@ export class ProductDetailComponent {
   private readonly response = inject(SSR_RESPONSE, { optional: true });
   readonly cart = inject(CartService);
   private readonly toast = inject(ToastService);
+  private readonly router = inject(Router);
   added = signal(false);
   origin = signal('50% 50%');
 
@@ -97,6 +98,17 @@ export class ProductDetailComponent {
       this.added.set(true);
       setTimeout(() => this.added.set(false), 1800);
     }
+  }
+
+  /** "Blej tani": shton orën në shportë (nëse nuk është) dhe të çon direkt te porosia. */
+  buyNow(): void {
+    const product = this.product();
+    if (!product || !product.inStock) return;
+
+    if (this.cart.quantityOf(product.id) === 0) {
+      this.cart.add(product);
+    }
+    this.router.navigate(['/porosia']);
   }
 
   zoom(event: MouseEvent): void {

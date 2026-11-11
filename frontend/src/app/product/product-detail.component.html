@@ -4,17 +4,6 @@
     <div class="sk-info"></div>
   </section>
 
-  @if (product()!.inStock) {
-    <div class="mobilebar">
-      <div>
-        <span class="mb-name">{{ product()!.brand }} {{ product()!.name }}</span>
-        <strong>{{ product()!.price | number: '1.0-2' }} €</strong>
-      </div>
-      <button type="button" class="btn buy-sticky" [class.buy--done]="added()" (click)="addToCart()">
-        {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
-      </button>
-    </div>
-  }
 } @else if (notFound() || !product()) {
   <section class="container missing">
     <h1>Ora nuk u gjet</h1>
@@ -22,17 +11,6 @@
     <a routerLink="/ora" class="btn btn--dark">Shiko koleksionin</a>
   </section>
 
-  @if (product()!.inStock) {
-    <div class="mobilebar">
-      <div>
-        <span class="mb-name">{{ product()!.brand }} {{ product()!.name }}</span>
-        <strong>{{ product()!.price | number: '1.0-2' }} €</strong>
-      </div>
-      <button type="button" class="btn buy-sticky" [class.buy--done]="added()" (click)="addToCart()">
-        {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
-      </button>
-    </div>
-  }
 } @else {
   <section class="container detail">
     <nav class="crumbs" aria-label="Rruga">
@@ -81,9 +59,17 @@
           <p class="desc">{{ product()!.description }}</p>
         }
 
-        <button type="button" class="btn buy" [class.buy--done]="added()" [disabled]="!product()!.inStock" (click)="addToCart()">
-          {{ !product()!.inStock ? 'Shitur' : added() ? 'U shtua ✓' : 'Shto në shportë' }}
-        </button>
+        <div class="buyrow">
+          <button type="button" class="btn buy" [disabled]="!product()!.inStock" (click)="buyNow()">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M13.2 2 4.5 13.4c-.3.4 0 1 .5 1h5.1l-1.1 7.2c-.1.6.7.9 1 .4l8.6-11.5c.3-.4 0-1-.5-1h-5l1.1-6.9c.1-.6-.7-.9-1-.4Z"/></svg>
+            {{ product()!.inStock ? 'Blej tani' : 'Shitur' }}
+          </button>
+          @if (product()!.inStock) {
+            <button type="button" class="btn buy-cart" [class.buy--done]="added()" (click)="addToCart()">
+              {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
+            </button>
+          }
+        </div>
         <p class="cartnote" aria-live="polite">
           @if (message()) {
             <span class="warn">{{ message() }}</span>
@@ -114,9 +100,16 @@
         <span class="mb-name">{{ product()!.brand }} {{ product()!.name }}</span>
         <strong>{{ product()!.price | number: '1.0-2' }} €</strong>
       </div>
-      <button type="button" class="btn buy-sticky" [class.buy--done]="added()" (click)="addToCart()">
-        {{ added() ? 'U shtua ✓' : 'Shto në shportë' }}
-      </button>
+      <div class="sticky-actions">
+        <button type="button" class="btn buy-sticky" (click)="buyNow()">Blej tani</button>
+        <button type="button" class="cart-sticky" [class.buy--done]="added()" (click)="addToCart()" aria-label="Shto në shportë">
+          @if (added()) {
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+          } @else {
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 11h10.3l2-8H6.3"/><circle cx="9" cy="19.5" r="1.4"/><circle cx="17" cy="19.5" r="1.4"/></svg>
+          }
+        </button>
+      </div>
     </div>
   }
 }
