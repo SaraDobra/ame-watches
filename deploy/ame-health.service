@@ -1,0 +1,7 @@
+[Unit]
+Description=Kontrolli i shëndetit të ame watches
+
+[Service]
+Type=oneshot
+User=ame
+ExecStart=/opt/ame/deploy/healthcheck.sh
