@@ -41,7 +41,8 @@ export const LEGAL_PAGES: Record<string, LegalPage> = {
       {
         h: 'Shfletuesi juaj',
         p: [
-          'Shportën e ruajmë në shfletuesin tuaj, që të mos humbasë kur e mbyllni faqen. Nuk përdorim cookie reklamimi ose gjurmimi.',
+          'Shportën e ruajmë në shfletuesin tuaj, që të mos humbasë kur e mbyllni faqen.',
+          'Përdorim Meta Pixel (Facebook dhe Instagram) për të matur reklamat tona dhe për të kuptuar si përdoret faqja. Ai mund të vendosë cookie dhe t\'i dërgojë Meta-s të dhëna për vizitën tuaj, si faqet që shikoni dhe pajisjen. Këtë mund ta kufizoni nga cilësimet e shfletuesit ose të reklamave tuaja në Facebook dhe Instagram.',
           'Fontet e faqes ngarkohen nga Google Fonts, prandaj shfletuesi juaj lidhet me serverët e Google për to.',
         ],
       },

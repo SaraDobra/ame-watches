@@ -19,6 +19,7 @@ export class AppComponent {
   private readonly positions = new Map<number, number>();
   private lastPath = this.router.url.split(/[?#]/)[0];
   private currentId = 0;
+  private firstPage = true;
 
   constructor() {
     this.router.events.pipe(takeUntilDestroyed()).subscribe(event => {
@@ -30,6 +31,11 @@ export class AppComponent {
       if (!(event instanceof NavigationEnd)) return;
 
       this.isAdmin.set(event.urlAfterRedirects.startsWith('/admin'));
+
+      // Meta Pixel numëron vetë faqen e parë; te ndërrimet e tjera (SPA) e dërgojmë ne.
+      const fbq = typeof window !== 'undefined' ? (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq : undefined;
+      if (!this.firstPage && fbq && !this.isAdmin()) fbq('track', 'PageView');
+      this.firstPage = false;
 
       const path = event.urlAfterRedirects.split(/[?#]/)[0];
       const samePage = path === this.lastPath;
