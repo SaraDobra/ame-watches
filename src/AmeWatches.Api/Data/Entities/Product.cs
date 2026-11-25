@@ -15,6 +15,7 @@ public class Product
 
     public string? Description { get; set; }
     public decimal Price { get; set; }
+    public decimal? OldPrice { get; set; }   // çmimi para zbritjes; null = jo në zbritje
     public int Stock { get; set; }
 
     public WatchGender Gender { get; set; }

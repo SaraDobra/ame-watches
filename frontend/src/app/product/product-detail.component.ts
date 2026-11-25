@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { DOCUMENT, DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -42,6 +42,10 @@ export class ProductDetailComponent {
   origin = signal('50% 50%');
 
   product = signal<ProductDetail | null>(null);
+  readonly onSale = computed(() => {
+    const p = this.product();
+    return !!p && (p.oldPrice ?? 0) > p.price;
+  });
   loading = signal(true);
   notFound = signal(false);
   selected = signal(0);

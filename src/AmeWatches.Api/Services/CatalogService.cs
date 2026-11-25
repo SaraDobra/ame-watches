@@ -53,7 +53,8 @@ public class CatalogService : ICatalogService
                 p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault(),
                 p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).Skip(1).FirstOrDefault(),
                 p.Category != null ? p.Category.Name : null,
-                p.Category != null ? p.Category.Slug : null))
+                p.Category != null ? p.Category.Slug : null,
+                p.OldPrice))
             .ToListAsync();
 
         return new PagedResult<ProductListItem>(items, query.Page, query.PageSize, total);
@@ -68,7 +69,7 @@ public class CatalogService : ICatalogService
             {
                 p.Id, p.Name, p.Slug, p.ModelCode,
                 Brand = p.Brand.Name, BrandSlug = p.Brand.Slug,
-                p.Description, p.Price, p.Stock, p.Gender, p.Type,
+                p.Description, p.Price, p.OldPrice, p.Stock, p.Gender, p.Type,
                 p.CaseSizeMm, p.WaterResistance, p.Movement,
                 Category = p.Category != null ? p.Category.Name : null,
                 CategorySlug = p.Category != null ? p.Category.Slug : null,
@@ -84,7 +85,7 @@ public class CatalogService : ICatalogService
             product.Brand, product.BrandSlug, product.Description, product.Price,
             product.Stock, product.Stock > 0, product.Gender.ToString(), product.Type.ToString(),
             product.CaseSizeMm, product.WaterResistance, product.Movement, product.Images,
-            product.Category, product.CategorySlug);
+            product.Category, product.CategorySlug, product.OldPrice);
     }
 
     public async Task<PriceRange> GetPriceRange()

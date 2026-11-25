@@ -26,6 +26,7 @@
     <div class="layout">
       <div class="gallery">
         <div class="stage" (mousemove)="zoom($event)">
+          @if (onSale()) { <span class="sale">SALE</span> }
           @if (product()!.images.length) {
             @for (image of [product()!.images[selected()]]; track image) {
               <img class="photo" [src]="image | appImg" [style.transform-origin]="origin()" width="900" height="900" fetchpriority="high"
@@ -52,7 +53,10 @@
         <h1>{{ product()!.name }}</h1>
         <span class="code">{{ product()!.modelCode }}</span>
 
-        <div class="price">{{ product()!.price | number: '1.0-2' }} €</div>
+        <div class="price">
+          @if (onSale()) { <s class="old">{{ product()!.oldPrice | number: '1.0-2' }} €</s> }
+          <span [class.now]="onSale()">{{ product()!.price | number: '1.0-2' }} €</span>
+        </div>
         <div class="stock" [class.stock--out]="!product()!.inStock">{{ stockText() }}</div>
 
         @if (product()!.description) {
