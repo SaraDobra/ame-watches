@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import { DOCUMENT, DecimalPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -49,6 +49,7 @@ export class ProductDetailComponent {
   loading = signal(true);
   notFound = signal(false);
   selected = signal(0);
+  private readonly trackEl = viewChild<ElementRef<HTMLElement>>('track');
   message = signal('');
 
   readonly trust = [
@@ -113,6 +114,23 @@ export class ProductDetailComponent {
       this.cart.add(product);
     }
     this.router.navigate(['/porosia']);
+  }
+
+  /** Kur përdoruesi rrëshqet, përditëso cila foto është përpara. */
+  onSlide(track: HTMLElement): void {
+    const i = Math.round(track.scrollLeft / track.clientWidth);
+    if (i !== this.selected()) this.selected.set(i);
+  }
+
+  go(track: HTMLElement, step: number): void {
+    track.scrollTo({ left: (this.selected() + step) * track.clientWidth, behavior: 'smooth' });
+  }
+
+  /** Klikimi i miniaturës shkon te ajo foto. */
+  show(i: number): void {
+    const track = this.trackEl()?.nativeElement;
+    this.selected.set(i);
+    track?.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
   }
 
   zoom(event: MouseEvent): void {
