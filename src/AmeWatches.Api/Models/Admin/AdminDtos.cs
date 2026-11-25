@@ -17,7 +17,7 @@ public record ProductInput(
     [StringLength(50)] string? Movement,
     bool IsActive,
     int? CategoryId = null,
-    [Range(typeof(decimal), "0.01", "100000")] decimal? OldPrice = null
+    [Range(0.01, 100000)] decimal? OldPrice = null
 );
 
 public record CategoryInput(
