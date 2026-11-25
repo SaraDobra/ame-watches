@@ -21,6 +21,7 @@ export interface ProductListItem {
   brand: string;
   brandSlug: string;
   price: number;
+  oldPrice?: number | null;
   inStock: boolean;
   gender: string;
   type: string;
@@ -60,6 +61,7 @@ export interface ProductDetail {
   brandSlug: string;
   description: string | null;
   price: number;
+  oldPrice?: number | null;
   stock: number;
   inStock: boolean;
   gender: string;
@@ -83,5 +85,6 @@ export interface ProductSuggestion {
   modelCode: string;
   slug: string;
   price: number;
+  oldPrice?: number | null;
   imageUrl: string | null;
 }

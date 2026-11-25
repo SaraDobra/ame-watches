@@ -52,7 +52,7 @@ import { ImgPipe } from '../../pipes/img.pipe';
                   </td>
                   <td><a [routerLink]="['/admin/produktet', p.id]"><strong>{{ p.name }}</strong></a><br><small class="code">{{ p.modelCode }}</small></td>
                   <td>{{ p.brand }}</td>
-                  <td class="num">{{ p.price | number: '1.0-2' }} €</td>
+                  <td class="num">{{ p.price | number: '1.0-2' }} €@if ((p.oldPrice ?? 0) > p.price) { <br><small class="sale-tag">SALE</small> }</td>
                   <td class="num"><span class="adm-badge" [class.adm-badge--Cancelled]="p.stock === 0" [class.adm-badge--Pending]="p.stock > 0 && p.stock <= 2">{{ p.stock }}</span></td>
                   <td>
                     <button type="button" class="switch" [class.on]="p.isActive" role="switch" [attr.aria-checked]="p.isActive"
@@ -88,6 +88,7 @@ import { ImgPipe } from '../../pipes/img.pipe';
     </div>
   `,
   styles: `
+    .sale-tag { color: #fff; background: #d3202f; font-weight: 700; letter-spacing: 0.1em; padding: 0.05rem 0.45rem; border-radius: 4px; }
     .tools { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: center; }
     .find { min-width: 230px; }
     .thumb { width: 64px; }

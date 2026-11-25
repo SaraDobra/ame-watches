@@ -55,7 +55,8 @@ public record ProductListItem(
     string? ImageUrl,
     string? SecondImageUrl,
     string? Category = null,
-    string? CategorySlug = null
+    string? CategorySlug = null,
+    decimal? OldPrice = null
 );
 
 public record ProductDetail(
@@ -76,7 +77,8 @@ public record ProductDetail(
     string? Movement,
     IReadOnlyList<string> Images,
     string? Category = null,
-    string? CategorySlug = null
+    string? CategorySlug = null,
+    decimal? OldPrice = null
 );
 
 public record PagedResult<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

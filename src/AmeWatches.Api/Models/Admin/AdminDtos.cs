@@ -16,7 +16,8 @@ public record ProductInput(
     [StringLength(50)] string? WaterResistance,
     [StringLength(50)] string? Movement,
     bool IsActive,
-    int? CategoryId = null
+    int? CategoryId = null,
+    [Range(0.01, 100000)] decimal? OldPrice = null
 );
 
 public record CategoryInput(
@@ -65,13 +66,13 @@ public record AdminImage(int Id, string Url, int SortOrder);
 
 public record AdminProductListItem(
     int Id, string Name, string Slug, string ModelCode, string Brand,
-    decimal Price, int Stock, bool IsActive, string? ImageUrl, string? Category = null);
+    decimal Price, int Stock, bool IsActive, string? ImageUrl, string? Category = null, decimal? OldPrice = null);
 
 public record AdminProductDetail(
     int Id, string Name, string Slug, string ModelCode, int BrandId, string Brand,
     string? Description, decimal Price, int Stock,
     string Gender, string Type, decimal? CaseSizeMm, string? WaterResistance, string? Movement,
-    bool IsActive, IReadOnlyList<AdminImage> Images, int? CategoryId = null, string? Category = null);
+    bool IsActive, IReadOnlyList<AdminImage> Images, int? CategoryId = null, string? Category = null, decimal? OldPrice = null);
 
 public record AdminOrderListItem(
     string OrderNo, string CustomerName, string Phone, decimal Total,

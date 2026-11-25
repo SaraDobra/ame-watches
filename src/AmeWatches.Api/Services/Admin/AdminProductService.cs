@@ -53,7 +53,8 @@ public class AdminProductService : IAdminProductService
             .Select(p => new AdminProductListItem(
                 p.Id, p.Name, p.Slug, p.ModelCode, p.Brand.Name, p.Price, p.Stock, p.IsActive,
                 p.Images.OrderBy(i => i.SortOrder).Select(i => i.Url).FirstOrDefault(),
-                p.Category != null ? p.Category.Name : null))
+                p.Category != null ? p.Category.Name : null,
+                p.OldPrice))
             .ToListAsync();
 
         return new PagedAdmin<AdminProductListItem>(items, query.Page, query.PageSize, total);
@@ -154,6 +155,9 @@ public class AdminProductService : IAdminProductService
 
     private async Task<string?> CheckCategory(ProductInput input)
     {
+        if (input.OldPrice is decimal oldPrice && oldPrice <= input.Price)
+            return "Çmimi i vjetër duhet të jetë më i madh se çmimi aktual.";
+
         if (input.CategoryId is not int categoryId)
             return null;
 
@@ -170,6 +174,7 @@ public class AdminProductService : IAdminProductService
         product.ModelCode = code;
         product.BrandId = input.BrandId;
         product.CategoryId = input.CategoryId;
+        product.OldPrice = input.OldPrice;
         product.Description = string.IsNullOrWhiteSpace(input.Description) ? null : input.Description.Trim();
         product.Price = input.Price;
         product.Stock = input.Stock;
@@ -194,7 +199,7 @@ public class AdminProductService : IAdminProductService
         p.Id, p.Name, p.Slug, p.ModelCode, p.BrandId, p.Brand.Name, p.Description, p.Price, p.Stock,
         p.Gender.ToString(), p.Type.ToString(), p.CaseSizeMm, p.WaterResistance, p.Movement, p.IsActive,
         p.Images.OrderBy(i => i.SortOrder).Select(i => new AdminImage(i.Id, i.Url, i.SortOrder)).ToList(),
-        p.CategoryId, p.Category?.Name);
+        p.CategoryId, p.Category?.Name, p.OldPrice);
 
     private static string EscapeLike(string text)
         => text.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_").Replace("[", "\\[");

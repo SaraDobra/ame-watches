@@ -24,6 +24,9 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
         } @else {
           <app-watch-art [tone]="tone()" [label]="product().brand + ' ' + product().name" />
         }
+        @if (onSale()) {
+          <span class="sale">SALE</span>
+        }
         @if (!product().inStock) {
           <span class="tag">Shitur</span>
         }
@@ -32,7 +35,10 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
         <span class="brand">{{ product().brand }}</span>
         <h3>{{ product().name }}</h3>
         <span class="code">{{ product().modelCode }}</span>
-        <span class="price">{{ product().price | number: '1.0-2' }} €</span>
+        <span class="price">
+          @if (onSale()) { <s class="old">{{ product().oldPrice | number: '1.0-2' }} €</s> }
+          <span [class.now]="onSale()">{{ product().price | number: '1.0-2' }} €</span>
+        </span>
         <span class="view">Shiko detajet <span aria-hidden="true">→</span></span>
       </div>
     </a>
@@ -70,7 +76,10 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
     }
     .view { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dark); margin-top: 0.5rem; opacity: 0; transform: translateY(6px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); }
     @media (hover: none) { .view { opacity: 1; transform: none; } }
-    .tag { position: absolute; top: 0.9rem; left: 0.9rem; background: var(--ink); color: #fff; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.32rem 0.75rem; border-radius: var(--radius-pill); }
+    .sale { position: absolute; top: 0.9rem; left: 0.9rem; z-index: 1; background: #d3202f; color: #fff; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 0.34rem 0.8rem; border-radius: var(--radius-pill); }
+    .old { color: var(--muted); font-size: 0.95rem; margin-right: 0.45rem; }
+    .now { color: #d3202f; }
+    .tag { position: absolute; top: 0.9rem; right: 0.9rem; background: var(--ink); color: #fff; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.32rem 0.75rem; border-radius: var(--radius-pill); }
     .info { padding: 1.2rem 1.4rem 1rem; text-align: center; display: flex; flex-direction: column; gap: 0.25rem; }
     .brand { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dark); }
     h3 { font-size: 1.55rem; margin: 0.1rem 0 0; }
@@ -91,6 +100,7 @@ const TONES = ['black', 'navy', 'ivory', 'green'] as const;
 export class ProductCardComponent {
   product = input.required<ProductListItem>();
   readonly tone = computed(() => TONES[this.product().id % TONES.length]);
+  readonly onSale = computed(() => (this.product().oldPrice ?? 0) > this.product().price);
 
   private readonly quickBuy = inject(QuickBuyService);
   busy = signal(false);

@@ -35,6 +35,7 @@ export interface AdminProductListItem {
   modelCode: string;
   brand: string;
   price: number;
+  oldPrice?: number | null;
   stock: number;
   isActive: boolean;
   imageUrl: string | null;
@@ -50,6 +51,7 @@ export interface AdminProductDetail {
   brand: string;
   description: string | null;
   price: number;
+  oldPrice?: number | null;
   stock: number;
   gender: string;
   type: string;
@@ -68,6 +70,7 @@ export interface ProductInput {
   brandId: number;
   description: string | null;
   price: number;
+  oldPrice?: number | null;
   stock: number;
   gender: string;
   type: string;

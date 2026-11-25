@@ -26,10 +26,23 @@
     <div class="layout">
       <div class="gallery">
         <div class="stage" (mousemove)="zoom($event)">
+          @if (onSale()) { <span class="sale">SALE</span> }
           @if (product()!.images.length) {
-            @for (image of [product()!.images[selected()]]; track image) {
-              <img class="photo" [src]="image | appImg" [style.transform-origin]="origin()" width="900" height="900" fetchpriority="high"
-                   [alt]="product()!.brand + ' ' + product()!.name + ' — foto ' + (selected() + 1)">
+            <div class="track" #track (scroll)="onSlide(track)">
+              @for (image of product()!.images; track image; let i = $index) {
+                <div class="slide">
+                  <img class="photo" [src]="image | appImg" [style.transform-origin]="origin()" width="900" height="900"
+                       [attr.fetchpriority]="i === 0 ? 'high' : null" [attr.loading]="i === 0 ? null : 'lazy'"
+                       [alt]="product()!.brand + ' ' + product()!.name + ' — foto ' + (i + 1)">
+                </div>
+              }
+            </div>
+            @if (product()!.images.length > 1) {
+              <button type="button" class="arrow arrow--prev" (click)="go(track, -1)" [disabled]="selected() === 0" aria-label="Foto e mëparshme">‹</button>
+              <button type="button" class="arrow arrow--next" (click)="go(track, 1)" [disabled]="selected() === product()!.images.length - 1" aria-label="Foto tjetër">›</button>
+              <div class="dots" aria-hidden="true">
+                @for (image of product()!.images; track image; let i = $index) { <span [class.on]="i === selected()"></span> }
+              </div>
             }
           } @else {
             <app-watch-art tone="black" [label]="product()!.brand + ' ' + product()!.name" />
@@ -39,7 +52,7 @@
           <div class="thumbs" role="tablist" aria-label="Fotot e orës">
             @for (image of product()!.images; track image; let i = $index) {
               <button type="button" role="tab" [class.on]="i === selected()" [attr.aria-selected]="i === selected()"
-                      [attr.aria-label]="'Foto ' + (i + 1)" (click)="selected.set(i)">
+                      [attr.aria-label]="'Foto ' + (i + 1)" (click)="show(i)">
                 <img appFade [src]="image | appImg" alt="" width="84" height="84" loading="lazy">
               </button>
             }
@@ -52,7 +65,10 @@
         <h1>{{ product()!.name }}</h1>
         <span class="code">{{ product()!.modelCode }}</span>
 
-        <div class="price">{{ product()!.price | number: '1.0-2' }} €</div>
+        <div class="price">
+          @if (onSale()) { <s class="old">{{ product()!.oldPrice | number: '1.0-2' }} €</s> }
+          <span [class.now]="onSale()">{{ product()!.price | number: '1.0-2' }} €</span>
+        </div>
         <div class="stock" [class.stock--out]="!product()!.inStock">{{ stockText() }}</div>
 
         @if (product()!.description) {

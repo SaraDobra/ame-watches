@@ -16,6 +16,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         b.Property(x => x.CaseSizeMm).HasPrecision(5, 1);
         b.Property(x => x.WaterResistance).HasMaxLength(50);
         b.Property(x => x.Price).HasColumnType("decimal(18,2)");
+        b.Property(x => x.OldPrice).HasColumnType("decimal(18,2)");
         b.Property(x => x.Gender).HasConversion<string>().HasMaxLength(20);
         b.Property(x => x.Type).HasConversion<string>().HasMaxLength(20);
 
