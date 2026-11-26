@@ -167,10 +167,12 @@ export class ProductDetailComponent {
     this.meta.updateTag({ property: 'og:description', content: description });
     this.seo.setCanonical(`/ora/${product.slug}`);
     const origin = this.document.location?.origin ?? '';
-    // Rrjetet sociale shfaqin besueshëm vetëm JPG/PNG; për WebP/AVIF mbetet foto e përgjithshme e ame.
-    const shareable = product.images.find(url => /\.(jpe?g|png)$/i.test(url));
+    // Preferohet JPG/PNG (rrjetet sociale e shfaqin më besueshëm); përndryshe foto e parë e orës, edhe WebP.
+    const shareable = product.images.find(url => /\.(jpe?g|png)$/i.test(url)) ?? product.images[0];
     const first = shareable ? imageSrc(shareable) : '';
-    this.seo.setImage(first ? (first.startsWith('http') ? first : origin + first) : null);
+    const imageUrl = first ? (first.startsWith('http') ? first : origin + first) : null;
+    this.seo.setImage(imageUrl);
+    this.seo.setProduct({ sku: product.modelCode, price: product.price, inStock: product.inStock, brand: product.brand });
 
     const existing = this.document.getElementById('product-jsonld');
     existing?.remove();
@@ -182,6 +184,8 @@ export class ProductDetailComponent {
       '@type': 'Product',
       name: heading,
       sku: product.modelCode,
+      url: origin + `/ora/${product.slug}`,
+      ...(imageUrl ? { image: imageUrl } : {}),
       brand: { '@type': 'Brand', name: product.brand },
       description,
       offers: {
